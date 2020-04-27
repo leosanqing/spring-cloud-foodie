@@ -12,6 +12,14 @@
         <module>common/foodie-cloud-shared-pojo</module>
         <module>platform/registry-center</module>
         <module>common/foodie-cloud-web-components</module>
+        <module>domain/cart/foodie-cart-api</module>
+        <module>domain/cart/foodie-cart-service</module>
+        <module>domain/cart/foodie-cart-web</module>
+        <module>domain/item/foodie-item-api</module>
+        <module>domain/item/foodie-item-mapper</module>
+        <module>domain/item/foodie-item-pojo</module>
+        <module>domain/item/foodie-item-service</module>
+        <module>domain/item/foodie-item-web</module>
     </modules>
 
     <packaging>pom</packaging>
@@ -29,6 +37,7 @@
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-parent</artifactId>
+
                 <version>2.1.5.RELEASE</version>
                 <type>pom</type>
                 <scope>import</scope>
@@ -87,14 +96,13 @@
 
         <!--引入日志依赖 抽象层 与 实现层-->
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>1.7.21</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-log4j2</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>1.7.21</version>
+            <groupId>com.lmax</groupId>
+            <artifactId>disruptor</artifactId>
+            <version>3.3.4</version>
         </dependency>
 
     </dependencies>
