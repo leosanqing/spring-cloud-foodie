@@ -1,5 +1,6 @@
 package com.leosanqing.cart.controller;
 
+import com.leosanqing.cart.service.CartService;
 import com.leosanqing.pojo.JSONResult;
 import com.leosanqing.pojo.ShopCartBO;
 import com.leosanqing.utils.JsonUtils;
@@ -33,6 +34,9 @@ public class ShopCartController {
     @Autowired
     private RedisOperator redisOperator;
 
+    @Autowired
+    private CartService cartService;
+
     @PostMapping("add")
     @ApiOperation(value = "添加购物车", notes = "添加购物车", httpMethod = "POST")
     public JSONResult add(
@@ -43,38 +47,13 @@ public class ShopCartController {
 //            HttpServletRequest request,
 //            HttpServletResponse response
     ) {
-        if (StringUtils.isBlank(userId)) {
-            return JSONResult.errorMsg("用户名id为空");
-        }
 
+        if (StringUtils.isBlank(userId)) {
+            return JSONResult.errorMsg("");
+        }
 
         System.out.println(shopCartBO);
-        // 前端用户在登录情况下，添加商品到购物车，会同步数据到redis
-
-        List<ShopCartBO> shopCartBOList;
-        final String shopCartStr = redisOperator.get(SHOP_CART + ":" + userId);
-        if (StringUtils.isBlank(shopCartStr)) {
-            shopCartBOList = new ArrayList<>();
-            shopCartBOList.add(shopCartBO);
-
-        } else {
-            shopCartBOList = JsonUtils.jsonToList(shopCartStr, ShopCartBO.class);
-
-            boolean isExist = false;
-
-            for (ShopCartBO cartBO : Objects.requireNonNull(shopCartBOList)) {
-                final String specId = cartBO.getSpecId();
-                if (specId.equals(shopCartBO.getSpecId())) {
-                    cartBO.setBuyCounts(cartBO.getBuyCounts() + shopCartBO.getBuyCounts());
-                    isExist = true;
-                }
-                if (!isExist) {
-                    shopCartBOList.add(shopCartBO);
-                }
-            }
-        }
-
-        redisOperator.set(SHOP_CART, JsonUtils.objectToJson(shopCartBOList));
+        cartService.addItemToCart(userId, shopCartBO);
 
         return JSONResult.ok();
     }
@@ -90,25 +69,22 @@ public class ShopCartController {
             HttpServletRequest request,
             HttpServletResponse response
     ) {
+
         if (StringUtils.isBlank(userId) || StringUtils.isBlank(itemSpecId)) {
             return JSONResult.errorMsg("参数不能为空");
         }
+        cartService.removeItemFromCart(userId, itemSpecId);
 
+        return JSONResult.ok();
+    }
 
-        //  前端用户在登录情况下，删除商品到购物车，会同步数据到redis
-        final String shopCartStr = redisOperator.get(SHOP_CART + ":" + userId);
-        if (StringUtils.isNotBlank(shopCartStr)) {
-            final List<ShopCartBO> shopCartBOList = JsonUtils.jsonToList(shopCartStr, ShopCartBO.class);
-            if (shopCartBOList != null) {
-                for (ShopCartBO cartBO : shopCartBOList) {
-                    if (cartBO.getSpecId().equals(itemSpecId)) {
-                        shopCartBOList.remove(cartBO);
-                        break;
-                    }
-                }
-            }
-            redisOperator.set(SHOP_CART + ":" + userId, JsonUtils.objectToJson(shopCartBOList));
-        }
+    @PostMapping("clear_cart")
+    @ApiOperation(value = "清空购物车", notes = "清空购物车", httpMethod = "POST")
+    public JSONResult clearCart(
+            @ApiParam(name = "userId", value = "用户id")
+            @RequestParam String userId
+    ) {
+        cartService.clearCart(userId);
 
         return JSONResult.ok();
     }

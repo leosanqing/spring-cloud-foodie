@@ -7,6 +7,8 @@ server:
 spring:
   profiles:
     active: prod
+  application:
+    name: foodie-cart-application
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     driver-class-name: com.mysql.jdbc.Driver
@@ -29,8 +31,7 @@ spring:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
     default-property-inclusion: NON_NULL
-  application:
-    name: foodie-shop
+
 #####################
 #
 #   mybatis 配置
