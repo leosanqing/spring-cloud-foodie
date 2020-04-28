@@ -29,8 +29,8 @@ public interface ItemsMapperCustom {
      * @param map
      * @return
      */
-    List<SearchItemsVO> searchItems(
-            @Param("paramsMap") Map<String, String> map);
+//    List<SearchItemsVO> searchItems(
+//            @Param("paramsMap") Map<String, String> map);
 
     /**
      * 根据第三级目录查询商品
@@ -38,8 +38,8 @@ public interface ItemsMapperCustom {
      * @param map
      * @return
      */
-    List<SearchItemsVO> searchItemsByThirdCatId(
-            @Param("paramsMap") Map<String, Object> map);
+//    List<SearchItemsVO> searchItemsByThirdCatId(
+//            @Param("paramsMap") Map<String, Object> map);
 
 
     /**

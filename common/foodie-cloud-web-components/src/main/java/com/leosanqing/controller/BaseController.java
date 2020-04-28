@@ -18,16 +18,4 @@ public class BaseController {
     public static final String REDIS_USER_TOKEN = "redis_user_token";
 
 
-//    protected UsersVO convertUsersVO(Users users){
-//        // 生成token，用于分布式会话
-//        String uuid = UUID.randomUUID().toString().trim();
-//        redisOperator.set(REDIS_USER_TOKEN+":"+users.getId(),uuid);
-//
-//
-//        UsersVO usersVO = new UsersVO();
-//        BeanUtils.copyProperties(users,usersVO);
-//        usersVO.setUserUniqueToken(uuid);
-//        return usersVO;
-//    }
-
 }
