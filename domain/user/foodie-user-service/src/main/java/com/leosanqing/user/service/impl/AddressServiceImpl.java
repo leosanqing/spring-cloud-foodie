@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Date;
 import java.util.List;
@@ -21,7 +22,7 @@ import java.util.List;
  * @Package: com.leosanqing.service.impl
  * @Description: 收货地址相关服务
  */
-@Service
+@RestController
 public class AddressServiceImpl implements AddressService {
     @Autowired
     private UserAddressMapper userAddressMapper;
@@ -112,7 +113,7 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     public UserAddress queryAddress(String userId, String addressId) {
-        final UserAddress userAddress = new UserAddress();
+        UserAddress userAddress = new UserAddress();
         userAddress.setUserId(userId);
         userAddress.setId(addressId);
         return userAddressMapper.selectOne(userAddress);

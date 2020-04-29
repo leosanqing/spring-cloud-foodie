@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="foodie-order-web" />
+        <module name="foodie-cart-api" />
+        <module name="foodie-order-pojo" />
+        <module name="foodie-item-service" />
+        <module name="foodie-cloud-web-components" />
+        <module name="foodie-order-mapper" />
+        <module name="foodie-item-web" />
+        <module name="foodie-item-pojo" />
+        <module name="foodie-order-api" />
+        <module name="foodie-cloud-shared-pojo" />
+        <module name="foodie-item-api" />
+        <module name="foodie-cloud-common" />
+        <module name="foodie-user-mapper" />
+        <module name="foodie-item-mapper" />
+        <module name="foodie-cart-service" />
+        <module name="foodie-cart-web" />
+        <module name="registry-center" />
+        <module name="foodie-order-service" />
+        <module name="foodie-user-api" />
+        <module name="foodie-user-service" />
+        <module name="foodie-user-web" />
+        <module name="foodie-user-pojo" />
+      </profile>
+    </annotationProcessing>
+  </component>
+</project>

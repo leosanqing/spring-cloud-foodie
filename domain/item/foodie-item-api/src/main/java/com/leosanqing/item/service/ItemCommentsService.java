@@ -1,6 +1,7 @@
 package com.leosanqing.item.service;
 
 import com.leosanqing.pojo.PagedGridResult;
+import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.Map;
  * @Version: 1.0
  */
 @RequestMapping("item-comments-api")
+@FeignClient("foodie-item-service")
 public interface ItemCommentsService {
     /**
      * 保存订单评价列表

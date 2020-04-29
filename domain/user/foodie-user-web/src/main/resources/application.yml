@@ -8,7 +8,10 @@ spring:
   profiles:
     active: prod
   application:
-    name: foodie-user-application
+    name: foodie-user-service
+    ## feign 当bean名字一样时，允许覆盖注册
+  main:
+    allow-bean-definition-overriding: true
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     driver-class-name: com.mysql.jdbc.Driver

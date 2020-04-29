@@ -1,21 +1,25 @@
 package com.leosanqing.user.controller;
 
 import com.leosanqing.controller.BaseController;
-import com.leosanqing.pojo.Users;
-import com.leosanqing.pojo.bo.UserBO;
-import com.leosanqing.pojo.vo.UsersVO;
-import com.leosanqing.service.UserService;
+
+import com.leosanqing.pojo.JSONResult;
+import com.leosanqing.user.pojo.Users;
+import com.leosanqing.user.pojo.bo.UserBO;
+import com.leosanqing.user.pojo.vo.UsersVO;
+import com.leosanqing.user.service.UserService;
 import com.leosanqing.utils.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.MDC;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.UUID;
 
 /**
  * @Author: leosanqing
@@ -129,7 +133,7 @@ public class PassportController extends BaseController {
         // 查询用户名是否存在
         Users users = null;
         try {
-            users = userService.queryUsersForLogin(username,
+            users = userService.queryUserForLogin(username,
                     MD5Utils.getMD5Str(password));
         } catch (Exception e) {
             e.printStackTrace();
@@ -190,23 +194,35 @@ public class PassportController extends BaseController {
         }
     }
 
-    /**
-     * 将用户的部分信息设置为空，保护隐私
-     *
-     * @param users
-     * @return
-     */
-    private Users setNullProperty(Users users) {
-        users.setUpdatedTime(null);
-        users.setCreatedTime(null);
-        users.setBirthday(null);
-        users.setMobile(null);
-        users.setRealname(null);
-        users.setEmail(null);
-        users.setPassword(null);
+    private UsersVO convertUsersVO(Users users) {
+        // 生成token，用于分布式会话
+        String uuid = UUID.randomUUID().toString().trim();
+        redisOperator.set(REDIS_USER_TOKEN + ":" + users.getId(), uuid);
 
-        return users;
+
+        UsersVO usersVO = new UsersVO();
+        BeanUtils.copyProperties(users, usersVO);
+        usersVO.setUserUniqueToken(uuid);
+        return usersVO;
     }
+
+//    /**
+//     * 将用户的部分信息设置为空，保护隐私
+//     *
+//     * @param users
+//     * @return
+//     */
+//    private Users setNullProperty(Users users) {
+//        users.setUpdatedTime(null);
+//        users.setCreatedTime(null);
+//        users.setBirthday(null);
+//        users.setMobile(null);
+//        users.setRealname(null);
+//        users.setEmail(null);
+//        users.setPassword(null);
+//
+//        return users;
+//    }
 
 
     @PostMapping("logout")

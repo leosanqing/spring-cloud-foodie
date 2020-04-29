@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
 import java.util.List;
@@ -23,6 +24,7 @@ import java.util.Map;
  * @Description: 商品评价服务接口实现
  * @Version: 1.0
  */
+@RestController
 public class ItemCommentsServiceImpl extends BaseService implements ItemCommentsService {
     @Autowired
     private ItemsCommentsMapperCustom itemsCommentsMapperCustom;

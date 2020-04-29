@@ -8,7 +8,9 @@ spring:
   profiles:
     active: prod
   application:
-    name: foodie-item-application
+    name: foodie-item-service
+  main:
+    allow-bean-definition-overriding: true
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     driver-class-name: com.mysql.jdbc.Driver

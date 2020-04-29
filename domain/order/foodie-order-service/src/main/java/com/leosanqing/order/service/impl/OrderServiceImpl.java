@@ -17,6 +17,7 @@ import com.leosanqing.order.pojo.vo.OrderVO;
 import com.leosanqing.order.service.OrderService;
 import com.leosanqing.pojo.ShopCartBO;
 import com.leosanqing.user.pojo.UserAddress;
+import com.leosanqing.user.service.AddressService;
 import com.leosanqing.utils.DateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -24,6 +25,7 @@ import org.n3r.idworker.Sid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,10 +50,9 @@ public class OrderServiceImpl implements OrderService {
 
 
     @Autowired
-    private LoadBalancerClient client;
-
-//    @Autowired
-//    private ItemService itemService;
+    private ItemService itemService;
+    @Autowired
+    private AddressService addressService;
 
     @Autowired
     private OrderItemsMapper orderItemsMapper;
@@ -64,6 +65,8 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     private RestTemplate restTemplate;
+    @Autowired
+    private LoadBalancerClient client;
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
@@ -116,16 +119,16 @@ public class OrderServiceImpl implements OrderService {
         // 1.生成 新订单 ，填写 Orders表
         final String orderId = sid.nextShort();
 
-        // FIXME 等待feign章节再来简化
-//        UserAddress address = addressService.queryUserAddres(userId, addressId);
-        ServiceInstance instance = client.choose("FOODIE-USER-SERVICE");
-        String url = String.format("http://%s:%s/address-api/queryAddress" +
-                        "?userId=%s&addressId=%s",
-                instance.getHost(),
-                instance.getPort(),
-                userId, addressId);
-        // TODO 偷个懒，不判断返回status，等下个章节用Feign重写
-        UserAddress userAddress = restTemplate.getForObject(url, UserAddress.class);
+        // feign简化
+        UserAddress userAddress = addressService.queryAddress(userId, addressId);
+//        ServiceInstance instance = client.choose("FOODIE-USER-SERVICE");
+//        String url = String.format("http://%s:%s/address-api/queryAddress" +
+//                        "?userId=%s&addressId=%s",
+//                instance.getHost(),
+//                instance.getPort(),
+//                userId, addressId);
+//        ResponseEntity<UserAddress> forEntity = restTemplate.getForEntity(url, UserAddress.class);
+//        UserAddress userAddress = restTemplate.getForObject(url, UserAddress.class);
 
         Orders orders = new Orders();
         orders.setId(orderId);
@@ -152,6 +155,8 @@ public class OrderServiceImpl implements OrderService {
             这样在插入OrderItems时，才能找到对应的分片。所以这里先插入Orders,
             计算金额后，再更新一下Orders.
          */
+        orders.setTotalAmount(0);
+        orders.setRealPayAmount(0);
         ordersMapper.insert(orders);
 
 
@@ -163,7 +168,7 @@ public class OrderServiceImpl implements OrderService {
         for (String itemSpecId : itemSpecIdArray) {
 
             // 查询每个商品的规格
-//            ItemsSpec itemsSpec = itemService.queryItemBySpecId(itemSpecId);
+            ItemsSpec itemsSpec = itemService.queryItemBySpecId(itemSpecId);
             ShopCartBO shopCartBO = getShopCartBOFromList(shopCartBOList, itemSpecId);
 
             toBeRemovedList.add(shopCartBO);
@@ -172,12 +177,12 @@ public class OrderServiceImpl implements OrderService {
                 counts = shopCartBO.getBuyCounts();
             }
             // 获取价格
-            ServiceInstance itemApi = client.choose("FOODIE-ITEM-SERVICE");
-            url = String.format("http://%s:%s/item-api/singleItemSpec?specId=%s",
-                    itemApi.getHost(),
-                    itemApi.getPort(),
-                    itemSpecId);
-            ItemsSpec itemsSpec = restTemplate.getForObject(url, ItemsSpec.class);
+//            ServiceInstance itemApi = client.choose("FOODIE-ITEM-SERVICE");
+//            url = String.format("http://%s:%s/item-api/singleItemSpec?specId=%s",
+//                    itemApi.getHost(),
+//                    itemApi.getPort(),
+//                    itemSpecId);
+//            ItemsSpec itemsSpec = restTemplate.getForObject(url, ItemsSpec.class);
             totalAmount += itemsSpec.getPriceNormal() * counts;
             realPayTotalAmount += itemsSpec.getPriceDiscount() * counts;
 
@@ -186,8 +191,8 @@ public class OrderServiceImpl implements OrderService {
 
             // FIXME 等待feign章节再来简化
             // TODO 作业 -同学们自己改造
-//            String imgUrl = itemService.queryItemMainImgById(itemId);
-            String imgUrl = null;
+            String imgUrl = itemService.queryItemImgByItemId(itemId);
+//            String imgUrl = null;
 
             // 2.3 将商品规格信息写入 订单商品表
             OrderItems subOrderItem = new OrderItems();
@@ -204,11 +209,9 @@ public class OrderServiceImpl implements OrderService {
 
 
             // 2.4 减库存
-//            itemService.decreaseItemSpecStock(itemSpecId, counts);
+            itemService.decreaseItemSpecStock(itemSpecId, counts);
 
             // 2.4 在用户提交订单以后，规格表中需要扣除库存
-            // FIXME 等待feign章节再来简化
-            // TODO 作业 -同学们自己改造
 //            itemService.decreaseItemSpecStock(itemSpecId, buyCounts);
         }
 

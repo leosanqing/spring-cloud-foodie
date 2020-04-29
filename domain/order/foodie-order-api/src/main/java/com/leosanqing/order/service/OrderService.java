@@ -4,9 +4,11 @@ package com.leosanqing.order.service;
 import com.leosanqing.order.pojo.OrderStatus;
 import com.leosanqing.order.pojo.bo.PlaceOrderBO;
 import com.leosanqing.order.pojo.vo.OrderVO;
+import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("order-api")
+@FeignClient("foodie-order-service")
 public interface OrderService {
 
     /**

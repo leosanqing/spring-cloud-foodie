@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RestController;
 import tk.mybatis.mapper.entity.Example;
 
 import java.util.Date;
@@ -20,7 +21,7 @@ import java.util.Date;
  * @Author: leosanqing
  * @Date: 2019-12-06 00:16
  */
-@Service
+@RestController
 public class UserServiceImpl implements UserService {
 
     private static final String FACE_PATH = "http://122.152.205.72:88/group1/M00/00/05/CpoxxFw_8_qAllFXAAAclhVPdSg994" +

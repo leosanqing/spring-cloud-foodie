@@ -3,8 +3,10 @@ package com.leosanqing.user.service;
 
 import com.leosanqing.user.pojo.Users;
 import com.leosanqing.user.pojo.bo.UserBO;
+import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
+@FeignClient("foodie-user-service")
 @RequestMapping("user-api")
 public interface UserService {
 

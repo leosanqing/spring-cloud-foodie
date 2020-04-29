@@ -3,11 +3,13 @@ package com.leosanqing.order.service.center;
 
 import com.leosanqing.order.pojo.OrderItems;
 import com.leosanqing.order.pojo.bo.center.OrderItemsCommentBO;
+import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RequestMapping("order-comments-api")
+@FeignClient("foodie-order-service")
 public interface MyCommentsService {
 
     /**

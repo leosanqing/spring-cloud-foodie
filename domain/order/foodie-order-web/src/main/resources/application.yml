@@ -1,5 +1,5 @@
 server:
-  port: 8088
+  #  port: 8088
   max-http-header-size: 80KB
   tomcat:
     uri-encoding: UTF-8
@@ -8,7 +8,9 @@ spring:
   profiles:
     active: prod
   application:
-    name: foodie-cart-service
+    name: foodie-order-service
+  main:
+    allow-bean-definition-overriding: true
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     driver-class-name: com.mysql.jdbc.Driver
@@ -31,7 +33,6 @@ spring:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
     default-property-inclusion: NON_NULL
-
 #####################
 #
 #   mybatis 配置

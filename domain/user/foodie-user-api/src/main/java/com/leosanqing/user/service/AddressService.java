@@ -3,11 +3,13 @@ package com.leosanqing.user.service;
 
 import com.leosanqing.user.pojo.UserAddress;
 import com.leosanqing.user.pojo.bo.AddressBO;
+import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RequestMapping("address-api")
+@FeignClient("foodie-user-service")
 public interface AddressService {
 
     /**

@@ -8,6 +8,7 @@ import com.leosanqing.item.pojo.ItemsSpec;
 import com.leosanqing.item.pojo.vo.CommentLevelCountsVO;
 import com.leosanqing.item.pojo.vo.ShopcartVO;
 import com.leosanqing.pojo.PagedGridResult;
+import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +22,7 @@ import java.util.List;
  */
 
 @RequestMapping("item-api")
+@FeignClient("foodie-item-service")
 public interface ItemService {
 
     /**

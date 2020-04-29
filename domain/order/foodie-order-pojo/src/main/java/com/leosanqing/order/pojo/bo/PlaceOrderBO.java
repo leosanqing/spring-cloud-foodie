@@ -1,6 +1,7 @@
 package com.leosanqing.order.pojo.bo;
 
 import com.leosanqing.pojo.ShopCartBO;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.List;
  * @Version: 1.0
  */
 @Data
+@AllArgsConstructor
 public class PlaceOrderBO {
     private SubmitOrderBO order;
 
