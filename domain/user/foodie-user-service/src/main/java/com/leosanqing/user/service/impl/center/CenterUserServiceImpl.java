@@ -18,7 +18,7 @@ import java.util.Date;
  * @Author: leosanqing
  * @Date: 2019-12-15 20:05
  * @Package: com.leosanqing.service.center.impl
- * @Description: TODO
+ * @Description: 用户中心服务实现类
  */
 @RestController
 public class CenterUserServiceImpl implements CenterUserService {

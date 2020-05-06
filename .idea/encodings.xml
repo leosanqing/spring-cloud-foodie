@@ -13,6 +13,16 @@
     <file url="file://$PROJECT_DIR$/domain/cart/foodie-cart-service/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/domain/cart/foodie-cart-web/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/domain/cart/foodie-cart-web/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/domain/index/foodie-index-api/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/domain/index/foodie-index-api/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/domain/index/foodie-index-mapper/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/domain/index/foodie-index-mapper/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/domain/index/foodie-index-pojo/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/domain/index/foodie-index-pojo/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/domain/index/foodie-index-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/domain/index/foodie-index-service/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/domain/index/foodie-index-web/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/domain/index/foodie-index-web/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/domain/item/foodie-item-api/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/domain/item/foodie-item-api/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/domain/item/foodie-item-mapper/src/main/java" charset="UTF-8" />

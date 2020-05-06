@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
  * @Author: leosanqing
  * @Date: 2019/12/15 下午11:28
  * @Package: com.leosanqing.resource
- * @Description: TODO
+ * @Description: 头像上传接口
  */
 
 @Component

@@ -7,29 +7,38 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="foodie-order-web" />
-        <module name="foodie-cart-api" />
-        <module name="foodie-order-pojo" />
+        <module name="foodie-user-api" />
+        <module name="foodie-index-mapper" />
+        <module name="foodie-index-service" />
+        <module name="foodie-index-pojo" />
         <module name="foodie-item-service" />
         <module name="foodie-cloud-web-components" />
         <module name="foodie-order-mapper" />
-        <module name="foodie-item-web" />
-        <module name="foodie-item-pojo" />
-        <module name="foodie-order-api" />
-        <module name="foodie-cloud-shared-pojo" />
         <module name="foodie-item-api" />
-        <module name="foodie-cloud-common" />
+        <module name="foodie-item-pojo" />
+        <module name="foodie-order-web" />
         <module name="foodie-user-mapper" />
-        <module name="foodie-item-mapper" />
+        <module name="foodie-cart-api" />
+        <module name="foodie-cloud-common" />
+        <module name="foodie-item-web" />
+        <module name="foodie-user-service" />
         <module name="foodie-cart-service" />
         <module name="foodie-cart-web" />
         <module name="registry-center" />
+        <module name="foodie-cloud-shared-pojo" />
+        <module name="foodie-index-api" />
+        <module name="foodie-index-web" />
         <module name="foodie-order-service" />
-        <module name="foodie-user-api" />
-        <module name="foodie-user-service" />
-        <module name="foodie-user-web" />
+        <module name="foodie-order-pojo" />
         <module name="foodie-user-pojo" />
+        <module name="foodie-order-api" />
+        <module name="foodie-item-mapper" />
+        <module name="foodie-user-web" />
+        <module name="untitled" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="untitled" target="1.8" />
+    </bytecodeTargetLevel>
   </component>
 </project>

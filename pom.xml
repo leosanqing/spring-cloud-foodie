@@ -30,6 +30,11 @@
         <module>domain/user/foodie-user-service</module>
         <module>domain/user/foodie-user-web</module>
         <module>domain/order/foodie-order-web</module>
+        <module>domain/index/foodie-index-api</module>
+        <module>domain/index/foodie-index-pojo</module>
+        <module>domain/index/foodie-index-web</module>
+        <module>domain/index/foodie-index-service</module>
+        <module>domain/index/foodie-index-mapper</module>
     </modules>
 
     <packaging>pom</packaging>

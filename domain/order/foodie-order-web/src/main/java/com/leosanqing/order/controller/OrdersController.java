@@ -32,9 +32,9 @@ public class OrdersController extends BaseController {
 
     @Autowired
     private OrderService orderService;
-
-    @Autowired
-    private RestTemplate restTemplate;
+//
+//    @Autowired
+//    private RestTemplate restTemplate;
 
     @Autowired
     private RedisOperator redisOperator;
@@ -47,7 +47,7 @@ public class OrdersController extends BaseController {
             HttpServletResponse response) {
 
         final String shopCartStr = redisOperator.get(SHOP_CART + ":" + submitOrderBO.getUserId());
-        if (StringUtils.isNotBlank(shopCartStr)) {
+        if (StringUtils.isBlank(shopCartStr)) {
             return JSONResult.errorMsg("购物车数据不正确");
         }
         List<ShopCartBO> shopCartBOList = JsonUtils.jsonToList(shopCartStr, ShopCartBO.class);
