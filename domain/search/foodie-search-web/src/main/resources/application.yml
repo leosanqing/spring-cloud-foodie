@@ -7,8 +7,12 @@ server:
 spring:
   profiles:
     active: prod
+  data:
+    elasticsearch:
+      cluster-name: my-application
+      cluster-nodes: 10.211.55.10:9300,10.211.55.11:9300,10.211.55.12:9300
   application:
-    name: foodie-order-service
+    name: foodie-search-service
   main:
     allow-bean-definition-overriding: true
   datasource:

@@ -43,7 +43,7 @@ public class MyOrdersController {
             return JSONResult.errorMsg("用户名id为空");
         }
 
-        final PagedGridResult pagedGridResult = myOrdersService.queryMyOrders(userId, orderStatus, page, pageSize);
+        PagedGridResult pagedGridResult = myOrdersService.queryMyOrders(userId, orderStatus, page, pageSize);
         return JSONResult.ok(pagedGridResult);
     }
 

@@ -35,6 +35,10 @@
         <module>domain/index/foodie-index-web</module>
         <module>domain/index/foodie-index-service</module>
         <module>domain/index/foodie-index-mapper</module>
+        <module>domain/search/foodie-search-api</module>
+        <module>domain/search/foodie-search-pojo</module>
+        <module>domain/search/foodie-search-service</module>
+        <module>domain/search/foodie-search-web</module>
     </modules>
 
     <packaging>pom</packaging>

@@ -141,6 +141,7 @@ public class MyOrdersServiceImpl extends BaseService implements MyOrdersService 
         map.put("userId", userId);
 
         map.put("orderStatus", OrderStatusEnum.WAIT_PAY.type);
+
         int waitPayCounts = ordersMapperCustom.getMyOrderStatusCounts(map);
 
         map.put("orderStatus", OrderStatusEnum.WAIT_DELIVER.type);
