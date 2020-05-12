@@ -39,6 +39,8 @@
         <module>domain/search/foodie-search-pojo</module>
         <module>domain/search/foodie-search-service</module>
         <module>domain/search/foodie-search-web</module>
+        <module>domain/fastdfs/foodie-fastdfs-api</module>
+        <module>domain/fastdfs/foodie-fastdfs-service</module>
     </modules>
 
     <packaging>pom</packaging>
