@@ -11,6 +11,20 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>foodie-fastdfs-service</artifactId>
+    <dependencies>
+        <!-- 订单服务接口层 -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>foodie-fastdfs-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
+
+        <!-- TODO 学到Feign章节以后，就可以把它删掉 -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+        </dependency>
+    </dependencies>
 
 </project>
