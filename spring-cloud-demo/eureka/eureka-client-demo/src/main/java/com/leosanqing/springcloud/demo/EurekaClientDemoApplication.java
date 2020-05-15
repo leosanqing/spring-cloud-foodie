@@ -3,20 +3,21 @@ package com.leosanqing.springcloud.demo;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.cloud.netflix.eureka.server.EnableEurekaServer;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
 /**
  * @Author: rtliu
- * @Date: 2020/5/14 下午5:56
+ * @Date: 2020/5/15 上午10:17
  * @Package: com.leosanqing.springcloud.demo
- * @Description: eurekaServer应用
+ * @Description: Eureka-Client
  * @Version: 1.0
  */
 @SpringBootApplication
-@EnableEurekaServer
-public class EurekaServerApplication {
+@EnableDiscoveryClient
+public class EurekaClientDemoApplication {
+
     public static void main(String[] args) {
-        new SpringApplicationBuilder(EurekaServerApplication.class)
+        new SpringApplicationBuilder(EurekaClientDemoApplication.class)
                 .web(WebApplicationType.SERVLET)
                 .run(args);
     }
