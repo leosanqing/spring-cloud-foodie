@@ -27,12 +27,11 @@ public class NetUtil {
         String host = blocks[0];
         int port = 80;
         if (blocks.length > 1) {
-            port = Integer.valueOf(blocks[1]);
+            port = Integer.parseInt(blocks[1]);
         } else {
             address += ":" + port; //use default 80
         }
-        String serverAddr = String.format("%s:%d", host, port);
-        return serverAddr;
+        return String.format("%s:%d", host, port);
     }
 
     public static String getLocalAddress(String address) {
@@ -41,7 +40,7 @@ public class NetUtil {
             throw new IllegalArgumentException(address + " is invalid address");
         }
         String host = blocks[0];
-        int port = Integer.valueOf(blocks[1]);
+        int port = Integer.parseInt(blocks[1]);
 
         if ("0.0.0.0".equals(host)) {
             return String.format("%s:%d", NetUtil.getLocalIp(), port);
@@ -52,7 +51,8 @@ public class NetUtil {
     private static int matchedIndex(String ip, String[] prefix) {
         for (int i = 0; i < prefix.length; i++) {
             String p = prefix[i];
-            if ("*".equals(p)) { //*, assumed to be IP
+            //*, assumed to be IP
+            if ("*".equals(p)) {
                 if (ip.startsWith("127.") ||
                         ip.startsWith("10.") ||
                         ip.startsWith("172.") ||
@@ -102,7 +102,9 @@ public class NetUtil {
                     }
                 }
             }
-            if (matchedIp != null) return matchedIp;
+            if (matchedIp != null) {
+                return matchedIp;
+            }
             return "127.0.0.1";
         } catch (Exception e) {
             return "127.0.0.1";

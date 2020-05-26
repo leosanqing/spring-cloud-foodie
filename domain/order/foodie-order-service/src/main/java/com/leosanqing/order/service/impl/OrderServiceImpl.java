@@ -63,10 +63,10 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private OrderStatusMapper orderStatusMapper;
 
-    @Autowired
-    private RestTemplate restTemplate;
-    @Autowired
-    private LoadBalancerClient client;
+//    @Autowired
+//    private RestTemplate restTemplate;
+//    @Autowired
+//    private LoadBalancerClient client;
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
@@ -189,8 +189,8 @@ public class OrderServiceImpl implements OrderService {
             // 2.2 根据商品id，获得商品图片和信息
             String itemId = itemsSpec.getItemId();
 
-            // FIXME 等待feign章节再来简化
-            // TODO 作业 -同学们自己改造
+            //  等待feign章节再来简化
+            //  作业 -同学们自己改造
             String imgUrl = itemService.queryItemImgByItemId(itemId);
 //            String imgUrl = null;
 

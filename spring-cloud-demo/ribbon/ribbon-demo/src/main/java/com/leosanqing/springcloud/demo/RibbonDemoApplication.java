@@ -4,22 +4,29 @@ import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
+import org.springframework.context.annotation.Bean;
+import org.springframework.web.client.RestTemplate;
 
 /**
  * @Author: rtliu
- * @Date: 2020/5/15 上午10:17
+ * @Date: 2020/5/26 下午2:49
  * @Package: com.leosanqing.springcloud.demo
- * @Description: Eureka-Client
+ * @Description: Ribbon 启动类
  * @Version: 1.0
  */
 @SpringBootApplication
 @EnableDiscoveryClient
-public class EurekaClientDemoApplication {
+public class RibbonDemoApplication {
+    @Bean
+    @LoadBalanced
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
+    }
+
 
     public static void main(String[] args) {
-
-
-        new SpringApplicationBuilder(EurekaClientDemoApplication.class)
+        new SpringApplicationBuilder(RibbonDemoApplication.class)
                 .web(WebApplicationType.SERVLET)
                 .run(args);
     }

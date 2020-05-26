@@ -29,6 +29,7 @@
         <module>domain/user/foodie-user-mapper</module>
         <module>domain/user/foodie-user-service</module>
         <module>domain/user/foodie-user-web</module>
+        <module>domain/user/foodie-user-web</module>
         <module>domain/order/foodie-order-web</module>
         <module>domain/index/foodie-index-api</module>
         <module>domain/index/foodie-index-pojo</module>
@@ -41,6 +42,8 @@
         <module>domain/search/foodie-search-web</module>
         <module>domain/fastdfs/foodie-fastdfs-api</module>
         <module>domain/fastdfs/foodie-fastdfs-service</module>
+        <module>domain/fastdfs/foodie-fastdfs-web</module>
+        <module>spring-cloud-demo</module>
     </modules>
 
     <packaging>pom</packaging>
@@ -58,7 +61,6 @@
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-parent</artifactId>
-
                 <version>2.1.5.RELEASE</version>
                 <type>pom</type>
                 <scope>import</scope>

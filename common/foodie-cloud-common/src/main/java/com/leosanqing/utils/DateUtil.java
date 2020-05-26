@@ -29,26 +29,24 @@ public class DateUtil {
     /**
      * 则个
      */
-    private static boolean LENIENT_DATE = false;
+    private static final boolean LENIENT_DATE = false;
 
 
-    private static Random random = new Random();
+    private static final Random RANDOM = new Random();
     private static final int ID_BYTES = 10;
 
     public synchronized static String generateId() {
         StringBuffer result = new StringBuffer();
-        result = result.append(System.currentTimeMillis());
+        result.append(System.currentTimeMillis());
         for (int i = 0; i < ID_BYTES; i++) {
-            result = result.append(random.nextInt(10));
+            result.append(RANDOM.nextInt(10));
         }
         return result.toString();
     }
 
-    protected static final float normalizedJulian(float JD) {
+    protected static float normalizedJulian(float JD) {
 
-        float f = Math.round(JD + 0.5f) - 0.5f;
-
-        return f;
+        return Math.round(JD + 0.5f) - 0.5f;
     }
 
     /**
@@ -106,7 +104,7 @@ public class DateUtil {
      * @param late  the "second date"
      * @return the days between the two dates
      */
-    public static final int daysBetween(Date early, Date late) {
+    public static int daysBetween(Date early, Date late) {
 
         Calendar c1 = Calendar.getInstance();
         Calendar c2 = Calendar.getInstance();
@@ -125,7 +123,7 @@ public class DateUtil {
      * @param late
      * @return the days between two dates.
      */
-    public static final int daysBetween(Calendar early, Calendar late) {
+    public static int daysBetween(Calendar early, Calendar late) {
 
         return (int) (toJulian(late) - toJulian(early));
     }
@@ -139,7 +137,7 @@ public class DateUtil {
      * @param c a calendar instance
      * @return the julian day number
      */
-    public static final float toJulian(Calendar c) {
+    public static float toJulian(Calendar c) {
 
         int Y = c.get(Calendar.YEAR);
         int M = c.get(Calendar.MONTH);
@@ -163,7 +161,7 @@ public class DateUtil {
      * @param date
      * @return the julian day number
      */
-    public static final float toJulian(Date date) {
+    public static float toJulian(Date date) {
 
         Calendar c = Calendar.getInstance();
         c.setTime(date);
@@ -179,8 +177,8 @@ public class DateUtil {
      * @return
      * @throws ParseException
      */
-    public static final String dateIncrease(String isoString, String fmt,
-                                            int field, int amount) {
+    public static String dateIncrease(String isoString, String fmt,
+                                      int field, int amount) {
 
         try {
             Calendar cal = GregorianCalendar.getInstance(TimeZone.getTimeZone(
@@ -202,11 +200,10 @@ public class DateUtil {
      * @param isoString
      * @param field     the time field.
      * @param up        Indicates if rolling up or rolling down the field value.
-     * @param expanded  use formating char's
      * @throws ParseException if an unknown field value is given.
      */
-    public static final String roll(String isoString, String fmt, int field,
-                                    boolean up) throws ParseException {
+    public static String roll(String isoString, String fmt, int field,
+                              boolean up) throws ParseException {
 
         Calendar cal = GregorianCalendar.getInstance(TimeZone.getTimeZone(
                 "GMT"));
@@ -278,7 +275,7 @@ public class DateUtil {
     /**
      * java.util.Date
      *
-     * @param dateText
+     * @param dateString
      * @param format
      * @return
      */
@@ -290,7 +287,7 @@ public class DateUtil {
     /**
      * java.util.Date
      *
-     * @param dateText
+     * @param dateString
      */
     public static Date stringToDate(String dateString) {
         return stringToDate(dateString, ISO_EXPANDED_DATE_FORMAT, LENIENT_DATE);
@@ -361,7 +358,6 @@ public class DateUtil {
      * 返回固定格式的当前时间
      * yyyy-MM-dd hh:mm:ss
      *
-     * @param date
      * @return
      */
     public static String dateToStringWithTime() {
@@ -398,7 +394,7 @@ public class DateUtil {
 
     /**
      * @param date
-     * @param days
+     * @param mnt
      * @return java.util.Date
      */
     public static Date dateIncreaseByMonth(Date date, int mnt) {
@@ -463,8 +459,7 @@ public class DateUtil {
     public static String getYear(Date date) {
         SimpleDateFormat formater = new SimpleDateFormat(
                 "yyyy");
-        String cur_year = formater.format(date);
-        return cur_year;
+        return formater.format(date);
     }
 
     /**
@@ -474,8 +469,7 @@ public class DateUtil {
     public static String getMonth(Date date) {
         SimpleDateFormat formater = new SimpleDateFormat(
                 "MM");
-        String cur_month = formater.format(date);
-        return cur_month;
+        return formater.format(date);
     }
 
     /**
@@ -485,15 +479,14 @@ public class DateUtil {
     public static String getDay(Date date) {
         SimpleDateFormat formater = new SimpleDateFormat(
                 "dd");
-        String cur_day = formater.format(date);
-        return cur_day;
+        return formater.format(date);
     }
 
     public static int getDayInt(Date date) {
         SimpleDateFormat formater = new SimpleDateFormat(
                 "dd");
         String cur_day = formater.format(date);
-        return Integer.valueOf(cur_day);
+        return Integer.parseInt(cur_day);
     }
 
     /**
@@ -594,9 +587,8 @@ public class DateUtil {
         calendarFirst = Calendar.getInstance();
         calendarFirst.add(Calendar.MONTH, 0);
         calendarFirst.set(Calendar.DAY_OF_MONTH, 1);
-        String firstDate = format.format(calendarFirst.getTime());
 
-        return firstDate;
+        return format.format(calendarFirst.getTime());
     }
 
     /**
@@ -612,8 +604,7 @@ public class DateUtil {
         calendarLast.setTime(new Date());
         calendarLast.getActualMaximum(Calendar.DAY_OF_MONTH);
 
-        String lastDate = format.format(calendarLast.getTime());
-        return lastDate;
+        return format.format(calendarLast.getTime());
     }
 
     /**

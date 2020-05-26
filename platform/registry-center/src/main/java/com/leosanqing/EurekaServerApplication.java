@@ -7,6 +7,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.netflix.eureka.server.EnableEurekaServer;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 /**
  * @Author: rtliu
  * @Date: 2020/4/23 下午3:33
@@ -18,7 +21,16 @@ import org.springframework.cloud.netflix.eureka.server.EnableEurekaServer;
 @EnableEurekaServer
 @Slf4j
 public class EurekaServerApplication {
+
+
     public static void main(String[] args) {
+        System.out.println(LocalDateTime.now().minusMinutes(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd " +
+                "HH:mm:ss")));
+        System.out.println(LocalDateTime.now().minusMinutes(1).withSecond(0).format(DateTimeFormatter.ofPattern("yyyy" +
+                "-MM" +
+                "-dd HH:mm:ss")));
+
+
         new SpringApplicationBuilder(EurekaServerApplication.class)
                 .web(WebApplicationType.SERVLET)
                 .run(args);

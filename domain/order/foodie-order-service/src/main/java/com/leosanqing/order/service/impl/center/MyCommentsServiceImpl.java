@@ -92,7 +92,7 @@ public class MyCommentsServiceImpl extends BaseService implements MyCommentsServ
         orderStatusMapper.updateByPrimaryKeySelective(orderStatus);
     }
 
-    // TODO 移到了itemCommentService
+    //  移到了itemCommentService
 //    @Transactional(propagation = Propagation.SUPPORTS)
 //    @Override
 //    public PagedGridResult queryMyComments(String userId,

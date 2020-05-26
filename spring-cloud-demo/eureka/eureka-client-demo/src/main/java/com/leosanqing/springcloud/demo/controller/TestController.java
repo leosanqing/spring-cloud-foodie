@@ -22,6 +22,7 @@ public class TestController {
     @Value("${server.port}")
     private String port;
 
+
     @GetMapping("say_hi")
     public String sayHi() {
         return "This is " + port;

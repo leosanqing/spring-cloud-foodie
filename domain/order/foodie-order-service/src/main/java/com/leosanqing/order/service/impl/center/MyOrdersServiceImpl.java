@@ -41,10 +41,8 @@ public class MyOrdersServiceImpl extends BaseService implements MyOrdersService 
 
     @Transactional(propagation = Propagation.SUPPORTS)
     @Override
-    public PagedGridResult queryMyOrders(String userId,
-                                         Integer orderStatus,
-                                         Integer page,
-                                         Integer pageSize) {
+    public PagedGridResult queryMyOrders(String userId, Integer orderStatus,
+                                         Integer page, Integer pageSize) {
 
         Map<String, Object> map = new HashMap<>();
         map.put("userId", userId);
