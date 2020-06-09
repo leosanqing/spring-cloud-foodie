@@ -5,7 +5,6 @@ import com.netflix.loadbalancer.AbstractLoadBalancerRule;
 import com.netflix.loadbalancer.IRule;
 import com.netflix.loadbalancer.Server;
 import lombok.NoArgsConstructor;
-import org.springframework.http.HttpRequest;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -14,7 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Collections;
 import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -33,6 +31,12 @@ public class MyRule extends AbstractLoadBalancerRule implements IRule {
 
     }
 
+    /**
+     * 选择一个服务器节点返回
+     *
+     * @param key
+     * @return
+     */
     @Override
     public Server choose(Object key) {
         HttpServletRequest request =
@@ -46,6 +50,13 @@ public class MyRule extends AbstractLoadBalancerRule implements IRule {
     }
 
 
+    /**
+     * 根据 uri 计算 hashcode,
+     *
+     * @param hashId
+     * @param addressList
+     * @return
+     */
     public Server route(int hashId, List<Server> addressList) {
         TreeMap<Long, Server> map = new TreeMap<>();
 
@@ -53,7 +64,6 @@ public class MyRule extends AbstractLoadBalancerRule implements IRule {
         if (CollectionUtils.isEmpty(addressList)) {
             return null;
         }
-
 
         addressList.forEach(e -> {
             for (int i = 0; i < 8; i++) {
@@ -75,6 +85,12 @@ public class MyRule extends AbstractLoadBalancerRule implements IRule {
         return last.get(last.firstKey());
     }
 
+    /**
+     * 计算 hash值
+     *
+     * @param key
+     * @return
+     */
     private Long hash(String key) {
         MessageDigest md5;
 

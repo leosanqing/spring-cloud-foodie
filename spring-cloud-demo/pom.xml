@@ -15,6 +15,9 @@
         <module>eureka/eureka-server-demo</module>
         <module>eureka/eureka-client-demo</module>
         <module>ribbon/ribbon-demo</module>
+        <module>feign/feign-consumer</module>
+        <module>feign/feign-client-intf</module>
+        <module>feign/feign-client</module>
     </modules>
 
 
@@ -22,12 +25,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-            <exclusions>
-                <exclusion>
-                    <artifactId>spring-boot-starter-logging</artifactId>
-                    <groupId>org.springframework.boot</groupId>
-                </exclusion>
-            </exclusions>
+            <!--            <exclusions>-->
+            <!--                <exclusion>-->
+            <!--                    <artifactId>spring-boot-starter-logging</artifactId>-->
+            <!--                    <groupId>org.springframework.boot</groupId>-->
+            <!--                </exclusion>-->
+            <!--            </exclusions>-->
         </dependency>
     </dependencies>
 </project>

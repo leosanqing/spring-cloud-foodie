@@ -1,26 +1,28 @@
 package com.leosanqing.springcloud.demo.controller;
 
+import com.leosanqing.springcloud.demo.api.IService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
 
 /**
  * @Author: rtliu
- * @Date: 2020/5/26 下午2:55
+ * @Date: 2020/6/5 下午2:27
  * @Package: com.leosanqing.springcloud.demo.controller
- * @Description: ribbon-demo Controller
+ * @Description: Feign Controller
  * @Version: 1.0
  */
 @RestController
-public class Controller {
+public class FeignController {
 
     @Autowired
-    private RestTemplate restTemplate;
+    private IService iService;
 
-    @GetMapping("sayHi")
+
+    @GetMapping("say_hi")
     public String sayHi() {
-        return restTemplate.getForObject("http://eureka-client/say_hi", String.class);
+        return iService.sayHi();
     }
+
 }
