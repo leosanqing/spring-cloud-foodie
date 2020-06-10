@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
  * @Description: 接口层
  * @Version: 1.0
  */
-@FeignClient("eureka-client")
+@FeignClient(value = "feign-client")
 public interface IService {
 
     /**
@@ -20,4 +20,13 @@ public interface IService {
      */
     @GetMapping("say_hi")
     String sayHi();
+
+    /**
+     * 调用异常方法 抛出异常
+     *
+     * @return
+     */
+    @GetMapping("/error")
+    String error();
+
 }

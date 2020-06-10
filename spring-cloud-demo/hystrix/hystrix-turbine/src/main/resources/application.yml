@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: hystrix-turbine
+  main:
+    allow-bean-definition-overriding: true
+server:
+  port: 30010
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:30000/eureka/
+
+
+turbine:
+  app-config: hystrix-consumer
+
+  combine-host-port: true
+  aggregator:
+    cluster-config: default

@@ -1,8 +1,8 @@
 spring:
   application:
-    name: feign-consumer
+    name: feign-consumer-advanced
 server:
-  port: 30005
+  port: 30003
 eureka:
   client:
     service-url:
