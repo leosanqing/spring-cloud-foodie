@@ -3,6 +3,7 @@ package com.leosanqing.order.service.impl.center;
 
 import com.leosanqing.enums.YesOrNo;
 import com.leosanqing.item.service.ItemCommentsService;
+import com.leosanqing.order.fallback.itemservice.ItemCommentsFeignClient;
 import com.leosanqing.order.mapper.OrderItemsMapper;
 import com.leosanqing.order.mapper.OrderStatusMapper;
 import com.leosanqing.order.mapper.OrdersMapper;
@@ -39,7 +40,8 @@ public class MyCommentsServiceImpl extends BaseService implements MyCommentsServ
 //    public ItemsCommentsMapperCustom itemsCommentsMapperCustom;
     // TODO feign章节里改成item-api
     @Autowired
-    private ItemCommentsService itemCommentsService;
+//    private ItemCommentsService itemCommentsService;
+    private ItemCommentsFeignClient itemCommentsService;
 //    @Autowired
 //    private LoadBalancerClient client;
 //    @Autowired

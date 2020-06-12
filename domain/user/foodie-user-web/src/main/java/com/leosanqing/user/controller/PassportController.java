@@ -8,6 +8,8 @@ import com.leosanqing.user.pojo.bo.UserBO;
 import com.leosanqing.user.pojo.vo.UsersVO;
 import com.leosanqing.user.service.UserService;
 import com.leosanqing.utils.*;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -116,6 +118,34 @@ public class PassportController extends BaseController {
 
 
     @PostMapping("login")
+    @HystrixCommand(
+            // 全局唯一的标识服务,默认函数名
+            commandKey = "loginFail",
+            // 全局服务分组，用于组织仪表盘,统计信息。默认:类名
+            groupKey = "password",
+            // 同一个类里，public,private 都可以
+            fallbackMethod = "loginFail",
+            // 以下列表中的异常不会触发降级
+//            ignoreExceptions = {IllegalArgumentException.class}
+            // 线程有关的属性
+            // 线程组，多个服务可以公用一个线程组
+            threadPoolKey = "threadPoolA",
+            threadPoolProperties = {
+                    // 核心线程数
+                    @HystrixProperty(name = "coreSize", value = "20"),
+                    // size > 0，使用 LinkedBlockingQueue
+                    // 默认 -1
+                    @HystrixProperty(name = "maxQueueSize", value = "40"),
+                    @HystrixProperty(name = "queueSizeRejectionThreshold", value = "15"),
+                    @HystrixProperty(name = "metrics.rollingStats.timeInMilliseconds", value = "1000"),
+                    // 窗口内桶子的数量
+                    @HystrixProperty(name = "metrics.rollingStats.numBuckets", value = "16")
+
+
+            }
+
+
+    )
     @ApiOperation(value = "用户登录", notes = "用户登录", httpMethod = "POST")
     public JSONResult login(@RequestBody UserBO userBO,
                             HttpServletRequest request,
@@ -156,6 +186,12 @@ public class PassportController extends BaseController {
         syncShopCartData(usersVO.getId(), request, response);
         return JSONResult.ok(usersVO);
 
+    }
+
+
+    private JSONResult loginFail(UserBO userBO, HttpServletRequest request, HttpServletResponse response,
+                                 Throwable throwable) {
+        return JSONResult.errorMsg("验证码输入错误(test)");
     }
 
 

@@ -1,0 +1,32 @@
+############################################################
+#
+# Eureka注册中心
+#
+############################################################
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:20000/eureka/
+
+
+server:
+  port: 20002
+  max-http-header-size: 80KB
+  tomcat:
+    uri-encoding: UTF-8
+management:
+  server:
+    port: 52002
+
+spring:
+  application:
+    name: hystrix-dashboard
+
+turbine:
+  aggregator:
+    cluster-config: default
+  app-config: foodie-cart-service,foodie-item-service,foodie-order-service,foodie-user-service,foodie-index-service,foodie-search-service,foodie-fastdfs-service
+  # 集群名称
+  cluster-name-expression: '"default"'
+  # 根据 host + port 区分
+  combine-host-port: true

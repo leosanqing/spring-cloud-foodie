@@ -16,6 +16,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("search-api")
 @FeignClient("foodie-search-service")
 public interface ItemESService {
+
+    /**
+     * 搜索商品
+     *
+     * @param keywords
+     * @param sort
+     * @param page
+     * @param pageSize
+     * @return
+     */
     @PostMapping("searchItems")
     PagedGridResult searchItems(@RequestParam String keywords,
                                 @RequestParam String sort,
