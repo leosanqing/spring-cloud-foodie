@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: config-server-demo
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/leosanqing/config-repo.git
+          force-pull: true
+#          search-paths:
+#          username:
+#          password:
+server:
+  port: 60000

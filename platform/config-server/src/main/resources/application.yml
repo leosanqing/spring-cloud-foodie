@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: config-server
+
+  cloud:
+    config:
+      server:
+        git:
+          force-pull: true
+          uri: https://github.com/leosanqing/config-repo.git
+          search-paths: {}

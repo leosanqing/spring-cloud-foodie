@@ -1,0 +1,12 @@
+server:
+  port: 61000
+
+spring:
+  application:
+    name: config-client-demo
+  cloud:
+    config:
+      uri: http://localhost:60000
+      profile: dev
+      #      label: master
+      name: config-consumer
