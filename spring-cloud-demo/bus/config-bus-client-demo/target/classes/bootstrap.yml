@@ -1,0 +1,22 @@
+encrypt:
+  key: leosanqing
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:20000/eureka/
+spring:
+  application:
+    name: config-bus-server-demo
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+  cloud:
+    config:
+      name: config-consumer
+      discovery:
+        service-id: config-bus-server-demo
+        enabled: true
+      profile: prod
+      label: master

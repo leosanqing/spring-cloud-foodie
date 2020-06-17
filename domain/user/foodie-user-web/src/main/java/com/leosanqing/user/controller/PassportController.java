@@ -3,6 +3,7 @@ package com.leosanqing.user.controller;
 import com.leosanqing.controller.BaseController;
 
 import com.leosanqing.pojo.JSONResult;
+import com.leosanqing.user.UserApplicationProperties;
 import com.leosanqing.user.pojo.Users;
 import com.leosanqing.user.pojo.bo.UserBO;
 import com.leosanqing.user.pojo.vo.UsersVO;
@@ -17,6 +18,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.MDC;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -39,6 +41,9 @@ public class PassportController extends BaseController {
     @Autowired
     private RedisOperator redisOperator;
 
+
+    @Autowired
+    private UserApplicationProperties properties;
 
     @GetMapping("usernameIsExist")
     @ApiOperation(value = "用户名是否存在", notes = "用户名是否存在", httpMethod = "GET")
@@ -74,6 +79,10 @@ public class PassportController extends BaseController {
         String password = userBO.getPassword();
         String confirmPassword = userBO.getConfirmPassword();
 
+
+        if (properties.isDisable()) {
+            return JSONResult.errorMsg("当前时间不可以注册");
+        }
 
         // 判断用户名密码为空
         if (StringUtils.isBlank(username) || StringUtils.isBlank(password)

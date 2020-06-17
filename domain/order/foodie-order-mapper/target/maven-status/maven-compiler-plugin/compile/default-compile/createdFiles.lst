@@ -1,0 +1,4 @@
+com/leosanqing/order/mapper/OrderStatusMapper.class
+com/leosanqing/order/mapper/OrderItemsMapper.class
+com/leosanqing/order/mapper/OrdersMapper.class
+com/leosanqing/order/mapper/OrdersMapperCustom.class

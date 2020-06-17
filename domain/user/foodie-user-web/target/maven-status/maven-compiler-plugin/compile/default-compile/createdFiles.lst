@@ -1,0 +1,6 @@
+com/leosanqing/user/UserApplication.class
+com/leosanqing/user/controller/AddressController.class
+com/leosanqing/user/controller/PassportController.class
+com/leosanqing/user/controller/center/CenterUserController.class
+com/leosanqing/user/resource/FileUpload.class
+com/leosanqing/user/controller/center/CenterController.class

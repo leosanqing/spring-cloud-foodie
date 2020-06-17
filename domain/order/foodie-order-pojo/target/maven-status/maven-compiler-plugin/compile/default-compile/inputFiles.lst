@@ -1,0 +1,10 @@
+/Users/zhuerchong/Desktop/github/spring-cloud-foodie/domain/order/foodie-order-pojo/src/main/java/com/leosanqing/order/pojo/vo/OrderVO.java
+/Users/zhuerchong/Desktop/github/spring-cloud-foodie/domain/order/foodie-order-pojo/src/main/java/com/leosanqing/order/pojo/OrderStatus.java
+/Users/zhuerchong/Desktop/github/spring-cloud-foodie/domain/order/foodie-order-pojo/src/main/java/com/leosanqing/order/pojo/vo/MyOrdersVO.java
+/Users/zhuerchong/Desktop/github/spring-cloud-foodie/domain/order/foodie-order-pojo/src/main/java/com/leosanqing/order/pojo/Orders.java
+/Users/zhuerchong/Desktop/github/spring-cloud-foodie/domain/order/foodie-order-pojo/src/main/java/com/leosanqing/order/pojo/bo/center/OrderItemsCommentBO.java
+/Users/zhuerchong/Desktop/github/spring-cloud-foodie/domain/order/foodie-order-pojo/src/main/java/com/leosanqing/order/pojo/vo/MySubOrderItemVO.java
+/Users/zhuerchong/Desktop/github/spring-cloud-foodie/domain/order/foodie-order-pojo/src/main/java/com/leosanqing/order/pojo/OrderItems.java
+/Users/zhuerchong/Desktop/github/spring-cloud-foodie/domain/order/foodie-order-pojo/src/main/java/com/leosanqing/order/pojo/bo/SubmitOrderBO.java
+/Users/zhuerchong/Desktop/github/spring-cloud-foodie/domain/order/foodie-order-pojo/src/main/java/com/leosanqing/order/pojo/bo/PlaceOrderBO.java
+/Users/zhuerchong/Desktop/github/spring-cloud-foodie/domain/order/foodie-order-pojo/src/main/java/com/leosanqing/order/pojo/vo/OrderStatusCountsVO.java

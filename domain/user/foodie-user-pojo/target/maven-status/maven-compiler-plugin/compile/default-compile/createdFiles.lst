@@ -1,0 +1,6 @@
+com/leosanqing/user/pojo/Users.class
+com/leosanqing/user/pojo/bo/AddressBO.class
+com/leosanqing/user/pojo/UserAddress.class
+com/leosanqing/user/pojo/vo/UsersVO.class
+com/leosanqing/user/pojo/bo/UserBO.class
+com/leosanqing/user/pojo/bo/center/CenterUserBO.class

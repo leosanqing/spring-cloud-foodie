@@ -1,0 +1,6 @@
+com/leosanqing/controller/BaseController.class
+com/leosanqing/config/WebMvcConfig.class
+com/leosanqing/aspect/ServiceLogAspect.class
+com/leosanqing/config/CorsConfig.class
+com/leosanqing/config/ESConfig.class
+com/leosanqing/config/Swagger2.class

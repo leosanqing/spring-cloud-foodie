@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: hystrix-consumer
+  main:
+    allow-bean-definition-overriding: true
+server:
+  port: 30006
+
+feign:
+  hystrix:
+    enabled: true
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:30000/eureka/
+
+
+management:
+  security:
+    enabled: false
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always
