@@ -1,10 +1,17 @@
 package com.leosanqing.order.pojo;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Table(name = "order_items")
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class OrderItems {
     /**
      * 主键id

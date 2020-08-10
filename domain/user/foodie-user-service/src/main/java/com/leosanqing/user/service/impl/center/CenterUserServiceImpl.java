@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.Resource;
 import java.util.Date;
 
 /**
@@ -23,13 +24,13 @@ import java.util.Date;
 @RestController
 public class CenterUserServiceImpl implements CenterUserService {
 
-    @Autowired
+    @Resource
     private UsersMapper usersMapper;
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
     public Users queryUserInfo(String userId) {
-        final Users users = usersMapper.selectByPrimaryKey(userId);
+        Users users = usersMapper.selectByPrimaryKey(userId);
         users.setPassword(null);
         return users;
     }
@@ -37,7 +38,7 @@ public class CenterUserServiceImpl implements CenterUserService {
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public Users updateUserInfo(String userId, CenterUserBO centerUserBO) {
-        final Users users = new Users();
+        Users users = new Users();
         BeanUtils.copyProperties(centerUserBO, users);
         users.setId(userId);
         users.setUpdatedTime(new Date());
@@ -49,10 +50,11 @@ public class CenterUserServiceImpl implements CenterUserService {
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public Users updateUserFace(String userId, String faceUrl) {
-        final Users users = new Users();
-        users.setId(userId);
-        users.setFace(faceUrl);
-        users.setUpdatedTime(new Date());
+        Users users = Users.builder()
+                .id(userId)
+                .face(faceUrl)
+                .updatedTime(new Date())
+                .build();
         usersMapper.updateByPrimaryKeySelective(users);
 
         return queryUserInfo(userId);

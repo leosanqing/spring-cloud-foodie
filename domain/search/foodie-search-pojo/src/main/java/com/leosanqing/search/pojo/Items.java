@@ -1,5 +1,6 @@
 package com.leosanqing.search.pojo;
 
+import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
@@ -14,6 +15,7 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
  */
 @Data
 @Document(indexName = "foodie-items-ik", type = "doc")
+@Builder
 public class Items {
     @Id
     @Field(store = true, type = FieldType.Text, index = false)

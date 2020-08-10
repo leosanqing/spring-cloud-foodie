@@ -1,7 +1,6 @@
 package com.leosanqing.order.service.impl.center;
 
 import com.github.pagehelper.PageHelper;
-import com.leosanqing.enums.OrderStatusEnum;
 import com.leosanqing.enums.YesOrNo;
 import com.leosanqing.order.mapper.OrderStatusMapper;
 import com.leosanqing.order.mapper.OrdersMapper;
@@ -15,7 +14,6 @@ import com.leosanqing.pojo.JSONResult;
 import com.leosanqing.pojo.PagedGridResult;
 import com.leosanqing.service.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -72,13 +70,13 @@ public class MyOrdersServiceImpl extends BaseService implements MyOrdersService 
     public void updateDeliverOrderStatus(String orderId) {
 
         OrderStatus updateOrder = new OrderStatus();
-        updateOrder.setOrderStatus(OrderStatusEnum.WAIT_RECEIVE.type);
+        updateOrder.setOrderStatus(OrderStatus.OrderStatusEnum.WAIT_RECEIVE.type);
         updateOrder.setDeliverTime(new Date());
 
         Example example = new Example(OrderStatus.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("orderId", orderId);
-        criteria.andEqualTo("orderStatus", OrderStatusEnum.WAIT_DELIVER.type);
+        criteria.andEqualTo("orderStatus", OrderStatus.OrderStatusEnum.WAIT_DELIVER.type);
 
         orderStatusMapper.updateByExampleSelective(updateOrder, example);
     }
@@ -87,11 +85,11 @@ public class MyOrdersServiceImpl extends BaseService implements MyOrdersService 
     @Override
     public Orders queryMyOrder(String userId, String orderId) {
 
-        Orders orders = new Orders();
-        orders.setUserId(userId);
-        orders.setId(orderId);
-        orders.setIsDelete(YesOrNo.NO.type);
-
+        Orders orders = Orders.builder()
+                .userId(userId)
+                .id(orderId)
+                .isDelete(YesOrNo.NO.type)
+                .build();
         return ordersMapper.selectOne(orders);
     }
 
@@ -100,17 +98,15 @@ public class MyOrdersServiceImpl extends BaseService implements MyOrdersService 
     public boolean updateReceiveOrderStatus(String orderId) {
 
         OrderStatus updateOrder = new OrderStatus();
-        updateOrder.setOrderStatus(OrderStatusEnum.SUCCESS.type);
+        updateOrder.setOrderStatus(OrderStatus.OrderStatusEnum.SUCCESS.type);
         updateOrder.setSuccessTime(new Date());
 
         Example example = new Example(OrderStatus.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("orderId", orderId);
-        criteria.andEqualTo("orderStatus", OrderStatusEnum.WAIT_RECEIVE.type);
+        criteria.andEqualTo("orderStatus", OrderStatus.OrderStatusEnum.WAIT_RECEIVE.type);
 
-        int result = orderStatusMapper.updateByExampleSelective(updateOrder, example);
-
-        return result == 1;
+        return 1 == orderStatusMapper.updateByExampleSelective(updateOrder, example);
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
@@ -126,9 +122,8 @@ public class MyOrdersServiceImpl extends BaseService implements MyOrdersService 
         criteria.andEqualTo("id", orderId);
         criteria.andEqualTo("userId", userId);
 
-        int result = ordersMapper.updateByExampleSelective(updateOrder, example);
+        return 1 == ordersMapper.updateByExampleSelective(updateOrder, example);
 
-        return result == 1;
     }
 
     @Transactional(propagation = Propagation.SUPPORTS)
@@ -138,23 +133,26 @@ public class MyOrdersServiceImpl extends BaseService implements MyOrdersService 
         Map<String, Object> map = new HashMap<>();
         map.put("userId", userId);
 
-        map.put("orderStatus", OrderStatusEnum.WAIT_PAY.type);
+        map.put("orderStatus", OrderStatus.OrderStatusEnum.WAIT_PAY.type);
 
         int waitPayCounts = ordersMapperCustom.getMyOrderStatusCounts(map);
 
-        map.put("orderStatus", OrderStatusEnum.WAIT_DELIVER.type);
+        map.put("orderStatus", OrderStatus.OrderStatusEnum.WAIT_DELIVER.type);
         int waitDeliverCounts = ordersMapperCustom.getMyOrderStatusCounts(map);
 
-        map.put("orderStatus", OrderStatusEnum.WAIT_RECEIVE.type);
+        map.put("orderStatus", OrderStatus.OrderStatusEnum.WAIT_RECEIVE.type);
         int waitReceiveCounts = ordersMapperCustom.getMyOrderStatusCounts(map);
 
-        map.put("orderStatus", OrderStatusEnum.SUCCESS.type);
+        map.put("orderStatus", OrderStatus.OrderStatusEnum.SUCCESS.type);
         map.put("isComment", YesOrNo.NO.type);
         int waitCommentCounts = ordersMapperCustom.getMyOrderStatusCounts(map);
 
         return new OrderStatusCountsVO(
-                waitPayCounts, waitDeliverCounts,
-                waitReceiveCounts, waitCommentCounts);
+                waitPayCounts,
+                waitDeliverCounts,
+                waitReceiveCounts,
+                waitCommentCounts
+        );
     }
 
     @Transactional(propagation = Propagation.SUPPORTS)

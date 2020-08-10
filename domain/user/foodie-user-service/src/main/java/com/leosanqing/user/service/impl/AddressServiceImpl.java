@@ -43,10 +43,10 @@ public class AddressServiceImpl implements AddressService {
     @Transactional(propagation = Propagation.REQUIRED)
     public void addNewUserAddress(AddressBO addressBO) {
 
-        Integer isDefault = 0;
+        int isDefault = 0;
         // 查询之前是否存在地址
         List<UserAddress> addressList = queryAll(addressBO.getUserId());
-        if (null == addressList || addressList.isEmpty() || addressList.size() == 0) {
+        if (null == addressList || addressList.isEmpty()) {
             isDefault = 1;
         }
 

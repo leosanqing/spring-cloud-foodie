@@ -23,6 +23,8 @@
         <module>hystrix/hystrix-turbine</module>
         <module>config/config-server-demo</module>
         <module>config/config-client-demo</module>
+        <module>bus/config-bus-server-demo</module>
+        <module>bus/config-bus-client-demo</module>
     </modules>
 
 

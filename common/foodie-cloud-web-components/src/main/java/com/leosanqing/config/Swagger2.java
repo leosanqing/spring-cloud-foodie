@@ -24,7 +24,8 @@ public class Swagger2 {
     // 配置Swagger2核心配置
     @Bean
     public Docket createRestApi() {
-        return new Docket(DocumentationType.SWAGGER_2) //指定API类型为Swagger2
+        //指定API类型为Swagger2
+        return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
                 .select()
                 .apis(RequestHandlerSelectors
@@ -37,13 +38,17 @@ public class Swagger2 {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("leosanqing商铺接口API") // 标题
+                // 标题
+                .title("leosanqing商铺接口API")
+                // 联系人
                 .contact(new Contact("leosanqing",
                         "https://github.com/leosanqing/Java-Notes",
-                        "stormleo@qq.com")) // 联系人
+                        "stormleo@qq.com"))
                 .version("1.0.1")
-                .termsOfServiceUrl("https://github.com/leosanqing/Java-Notes") // 网站地址
-                .description("电商平台API")  // 描述
+                // 网站地址
+                .termsOfServiceUrl("https://github.com/leosanqing/Java-Notes")
+                // 描述
+                .description("电商平台API")
                 .build();
 
 

@@ -14,6 +14,7 @@ import tk.mybatis.mapper.entity.Example;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author: rtliu
@@ -37,24 +38,21 @@ public class CategoryServiceImpl implements CategoryService {
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("type", 1);
 
-        List<Category> categories = categoryMapper.selectByExample(example);
-
-        return categories;
+        return categoryMapper.selectByExample(example);
     }
 
     @Transactional(propagation = Propagation.SUPPORTS)
     @Override
     public List<CategoryVO> getSubCatList(Integer rootCatId) {
-        List subCatList = categoryMapperCustom.getSubCatList(rootCatId);
 
-        return subCatList;
+        return categoryMapperCustom.getSubCatList(rootCatId);
     }
 
     @Transactional(propagation = Propagation.SUPPORTS)
     @Override
     public List<NewItemsVO> getSixNewItemsLazy(Integer rootCatId) {
 
-        HashMap<String, Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
         map.put("rootCatId", rootCatId);
         return categoryMapperCustom.getSixNewItemsLazy(map);
 

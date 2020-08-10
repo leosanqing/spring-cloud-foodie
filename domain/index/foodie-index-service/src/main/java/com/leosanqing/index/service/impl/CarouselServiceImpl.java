@@ -32,9 +32,6 @@ public class CarouselServiceImpl implements CarouselService {
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("isShow", isShow);
 
-        List<Carousel> carousels = carouselMapper.selectByExample(example);
-
-
-        return carousels;
+        return carouselMapper.selectByExample(example);
     }
 }

@@ -60,7 +60,10 @@ public class ItemESServiceImpl implements ItemESService {
         }
 
         NativeSearchQuery build = new NativeSearchQueryBuilder()
-                .withQuery(QueryBuilders.matchQuery(itemNameField, keywords))
+                .withQuery(
+                        QueryBuilders
+                                .matchQuery(itemNameField, keywords)
+                )
                 .withHighlightFields(new HighlightBuilder.Field(itemNameField)
 //                        .preTags(preTag).postTags(postTag)
                 )
@@ -83,15 +86,13 @@ public class ItemESServiceImpl implements ItemESService {
                     Integer sellCounts = (Integer) hit.getSourceAsMap().get("sellCounts");
 
 
-                    Items items = new Items();
-
-                    items.setId(id);
-                    items.setImgUrl(imgUrl);
-                    items.setItemName(itemsName);
-                    items.setPrice(price);
-                    items.setSellCounts(sellCounts);
-
-
+                    Items items = Items.builder()
+                            .id(id)
+                            .imgUrl(imgUrl)
+                            .itemName(itemsName)
+                            .price(price)
+                            .sellCounts(sellCounts)
+                            .build();
                     list.add(items);
                 }
 
@@ -100,12 +101,12 @@ public class ItemESServiceImpl implements ItemESService {
             }
         });
 
-        PagedGridResult pagedGridResult = new PagedGridResult();
-        pagedGridResult.setRows(itemsAggregatedPage.getContent());
-        pagedGridResult.setPage(page + 1);
-        pagedGridResult.setTotal(itemsAggregatedPage.getTotalPages());
-        pagedGridResult.setRecords(itemsAggregatedPage.getTotalElements());
-        return pagedGridResult;
+        return PagedGridResult.builder()
+                .page(page + 1)
+                .records(itemsAggregatedPage.getTotalElements())
+                .total(itemsAggregatedPage.getTotalPages())
+                .rows(itemsAggregatedPage.getContent())
+                .build();
     }
 
 

@@ -116,12 +116,11 @@ public class IndexController {
             @ApiParam(name = "rootCatId", value = "一级分类Id", required = true)
             @PathVariable Integer rootCatId) {
 
-
         if (rootCatId == null) {
             return JSONResult.errorMsg("商品分类不存在");
         }
-        List<NewItemsVO> categories = categoryService.getSixNewItemsLazy(rootCatId);
-        return JSONResult.ok(categories);
+
+        return JSONResult.ok(categoryService.getSixNewItemsLazy(rootCatId));
     }
 
 

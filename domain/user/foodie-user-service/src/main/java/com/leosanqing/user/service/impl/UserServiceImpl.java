@@ -47,21 +47,22 @@ public class UserServiceImpl implements UserService {
     @Transactional(propagation = Propagation.REQUIRED)
     public Users createUser(UserBO userBO) {
 
-        Users users = new Users();
-        users.setId(sid.nextShort());
-        users.setUsername(userBO.getUsername());
+        Users users = null;
         try {
-            users.setPassword(MD5Utils.getMD5Str(userBO.getPassword()));
+            users = Users.builder()
+                    .id(sid.nextShort())
+                    .username(userBO.getUsername())
+                    .password(MD5Utils.getMD5Str(userBO.getPassword()))
+                    .face(FACE_PATH)
+                    .birthday(DateUtil.stringToDate("1900-01-01"))
+                    .nickname(userBO.getUsername())
+                    .sex(Sex.SECRET.type)
+                    .createdTime(new Date())
+                    .updatedTime(new Date())
+                    .build();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        users.setBirthday(DateUtil.stringToDate("1900-01-01"));
-        users.setFace(FACE_PATH);
-        users.setNickname(userBO.getUsername());
-        users.setSex(Sex.SECRET.type);
-        users.setCreatedTime(new Date());
-        users.setUpdatedTime(new Date());
-
         usersMapper.insert(users);
         return users;
     }

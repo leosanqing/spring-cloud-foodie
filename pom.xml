@@ -44,6 +44,11 @@
         <module>domain/fastdfs/foodie-fastdfs-service</module>
         <module>domain/fastdfs/foodie-fastdfs-web</module>
         <module>spring-cloud-demo</module>
+        <module>platform/hystrix-turbine-plat</module>
+        <module>platform/hystrix-dashboard-plat</module>
+        <module>platform/config-server</module>
+        <module>platform/gateway</module>
+
     </modules>
 
     <packaging>pom</packaging>

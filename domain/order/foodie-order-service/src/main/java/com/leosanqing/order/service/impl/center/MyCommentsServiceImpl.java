@@ -82,15 +82,17 @@ public class MyCommentsServiceImpl extends BaseService implements MyCommentsServ
 
 
         // 2. 修改订单表改已评价 orders
-        Orders order = new Orders();
-        order.setId(orderId);
-        order.setIsComment(YesOrNo.YES.type);
+        Orders order = Orders.builder()
+                .id(orderId)
+                .isComment(YesOrNo.YES.type)
+                .build();
         ordersMapper.updateByPrimaryKeySelective(order);
 
         // 3. 修改订单状态表的留言时间 order_status
-        OrderStatus orderStatus = new OrderStatus();
-        orderStatus.setOrderId(orderId);
-        orderStatus.setCommentTime(new Date());
+        OrderStatus orderStatus = OrderStatus.builder()
+                .orderId(orderId)
+                .commentTime(new Date())
+                .build();
         orderStatusMapper.updateByPrimaryKeySelective(orderStatus);
     }
 

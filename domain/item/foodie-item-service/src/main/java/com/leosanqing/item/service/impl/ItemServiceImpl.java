@@ -2,13 +2,11 @@ package com.leosanqing.item.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.leosanqing.enums.CommentLevel;
 import com.leosanqing.enums.YesOrNo;
 import com.leosanqing.item.mapper.*;
 import com.leosanqing.item.pojo.*;
 import com.leosanqing.item.pojo.vo.CommentLevelCountsVO;
 import com.leosanqing.item.pojo.vo.ItemCommentVO;
-import com.leosanqing.item.pojo.vo.SearchItemsVO;
 import com.leosanqing.item.pojo.vo.ShopcartVO;
 import com.leosanqing.item.service.ItemService;
 import com.leosanqing.pojo.PagedGridResult;
@@ -22,10 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RestController;
 import tk.mybatis.mapper.entity.Example;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -94,6 +89,24 @@ public class ItemServiceImpl implements ItemService {
         return itemsParamMapper.selectOneByExample(example);
     }
 
+
+    public enum CommentLevel {
+        /**
+         * 表示评价等级的枚举
+         */
+        GOOD(1, "好评"),
+        NORMAL(2, "中评"),
+        BAD(3, "差评");
+
+        public final int type;
+        public final String value;
+
+        CommentLevel(int type, String value) {
+            this.type = type;
+            this.value = value;
+        }
+    }
+
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
     public CommentLevelCountsVO queryCommentCounts(String itemId) {
@@ -102,18 +115,18 @@ public class ItemServiceImpl implements ItemService {
         Integer bad = getCommentCounts(itemId, CommentLevel.BAD.type);
         Integer total = good + bad + normal;
 
-        CommentLevelCountsVO levelCountsVO = new CommentLevelCountsVO();
-        levelCountsVO.setGoodCounts(good);
-        levelCountsVO.setBadCounts(bad);
-        levelCountsVO.setNormalCounts(normal);
-        levelCountsVO.setTotalCounts(total);
-        return levelCountsVO;
+        return CommentLevelCountsVO.builder()
+                .goodCounts(good)
+                .badCounts(bad)
+                .normalCounts(normal)
+                .totalCounts(total)
+                .build();
     }
 
     @Transactional(propagation = Propagation.SUPPORTS)
     @Override
     public PagedGridResult queryPagedComments(String itemId, Integer level, Integer page, Integer pageSize) {
-        HashMap<String, Object> map = new HashMap<>(4);
+        Map<String, Object> map = new HashMap<>(4);
         map.put("itemId", itemId);
         map.put("level", level);
 
@@ -154,6 +167,7 @@ public class ItemServiceImpl implements ItemService {
 //        List<SearchItemsVO> searchItemsVOS = itemsMapperCustom.searchItemsByThirdCatId(map);
 //        return setterPage(searchItemsVOS,page);
 //    }
+
 
     private PagedGridResult setterPage(List<?> list, int page) {
         PageInfo<?> pageList = new PageInfo<>(list);

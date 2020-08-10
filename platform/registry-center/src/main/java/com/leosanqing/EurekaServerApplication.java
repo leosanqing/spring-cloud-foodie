@@ -24,13 +24,6 @@ public class EurekaServerApplication {
 
 
     public static void main(String[] args) {
-        System.out.println(LocalDateTime.now().minusMinutes(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd " +
-                "HH:mm:ss")));
-        System.out.println(LocalDateTime.now().minusMinutes(1).withSecond(0).format(DateTimeFormatter.ofPattern("yyyy" +
-                "-MM" +
-                "-dd HH:mm:ss")));
-
-
         new SpringApplicationBuilder(EurekaServerApplication.class)
                 .web(WebApplicationType.SERVLET)
                 .run(args);

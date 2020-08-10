@@ -1,7 +1,6 @@
 package com.leosanqing.order.service.impl;
 
 
-import com.leosanqing.enums.OrderStatusEnum;
 import com.leosanqing.enums.YesOrNo;
 import com.leosanqing.item.pojo.ItemsSpec;
 import com.leosanqing.item.service.ItemService;
@@ -23,13 +22,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.n3r.idworker.Sid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.client.ServiceInstance;
-import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -79,8 +74,9 @@ public class OrderServiceImpl implements OrderService {
     public void closeOrder() {
 
         // 查询所有未付款订单，判断时间是否超时（1天），超时则关闭交易
-        OrderStatus queryOrder = new OrderStatus();
-        queryOrder.setOrderStatus(OrderStatusEnum.WAIT_PAY.type);
+        OrderStatus queryOrder = OrderStatus.builder()
+                .orderStatus(OrderStatus.OrderStatusEnum.WAIT_PAY.type)
+                .build();
         List<OrderStatus> list = orderStatusMapper.select(queryOrder);
         for (OrderStatus os : list) {
             // 获得订单创建时间
@@ -96,10 +92,11 @@ public class OrderServiceImpl implements OrderService {
 
     @Transactional(propagation = Propagation.REQUIRED)
     void doCloseOrder(String orderId) {
-        OrderStatus close = new OrderStatus();
-        close.setOrderId(orderId);
-        close.setOrderStatus(OrderStatusEnum.CLOSE.type);
-        close.setCloseTime(new Date());
+        OrderStatus close = OrderStatus.builder()
+                .orderId(orderId)
+                .orderStatus(OrderStatus.OrderStatusEnum.CLOSE.type)
+                .closeTime(new Date())
+                .build();
         orderStatusMapper.updateByPrimaryKeySelective(close);
     }
 
@@ -130,25 +127,23 @@ public class OrderServiceImpl implements OrderService {
 //        ResponseEntity<UserAddress> forEntity = restTemplate.getForEntity(url, UserAddress.class);
 //        UserAddress userAddress = restTemplate.getForObject(url, UserAddress.class);
 
-        Orders orders = new Orders();
-        orders.setId(orderId);
-        orders.setUserId(userId);
-        orders.setLeftMsg(leftMsg);
-        orders.setPayMethod(payMethod);
-
-        orders.setReceiverAddress(userAddress.getProvince() + " " + userAddress.getCity() + " "
-                + userAddress.getDistrict() + " " + userAddress.getDetail());
-        orders.setReceiverMobile(userAddress.getMobile());
-        orders.setReceiverName(userAddress.getReceiver());
-
-        orders.setPostAmount(postAmount);
-
-
-        orders.setIsComment(YesOrNo.NO.type);
-        orders.setIsDelete(YesOrNo.NO.type);
-        orders.setCreatedTime(new Date());
-        orders.setUpdatedTime(new Date());
-
+        Orders orders = Orders.builder()
+                .id(orderId)
+                .userId(userId)
+                .leftMsg(leftMsg)
+                .payMethod(payMethod)
+                .receiverAddress(userAddress.getProvince() + " " + userAddress.getCity() + " "
+                        + userAddress.getDistrict() + " " + userAddress.getDetail())
+                .receiverMobile(userAddress.getMobile())
+                .receiverName(userAddress.getReceiver())
+                .postAmount(postAmount)
+                .isComment(YesOrNo.NO.type)
+                .isDelete(YesOrNo.NO.type)
+                .createdTime(new Date())
+                .updatedTime(new Date())
+                .totalAmount(0)
+                .totalAmount(0)
+                .build();
 
         /*
             分库分表：orderItems作为orders的子表，所有插入时，要先插入Orders，
@@ -195,16 +190,17 @@ public class OrderServiceImpl implements OrderService {
 //            String imgUrl = null;
 
             // 2.3 将商品规格信息写入 订单商品表
-            OrderItems subOrderItem = new OrderItems();
-            subOrderItem.setBuyCounts(counts);
-            subOrderItem.setItemImg(imgUrl);
-            subOrderItem.setItemId(itemId);
-            subOrderItem.setId(sid.nextShort());
-            subOrderItem.setItemName(itemsSpec.getName());
-            subOrderItem.setItemSpecId(itemSpecId);
-            subOrderItem.setOrderId(orderId);
-            subOrderItem.setItemSpecName(itemsSpec.getName());
-            subOrderItem.setPrice(itemsSpec.getPriceDiscount());
+            OrderItems subOrderItem = OrderItems.builder()
+                    .buyCounts(counts)
+                    .id(sid.nextShort())
+                    .itemId(itemId)
+                    .itemImg(imgUrl)
+                    .itemName(itemsSpec.getName())
+                    .itemSpecId(itemSpecId)
+                    .orderId(orderId)
+                    .itemSpecName(itemsSpec.getName())
+                    .price(itemsSpec.getPriceDiscount())
+                    .build();
             orderItemsMapper.insert(subOrderItem);
 
 
@@ -225,22 +221,22 @@ public class OrderServiceImpl implements OrderService {
 //        ordersMapper.insert(orders);
 
         // 3. 订单状态表
-        final OrderStatus orderStatus = new OrderStatus();
+        OrderStatus orderStatus = new OrderStatus();
+
         orderStatus.setOrderId(orderId);
         try {
             Thread.sleep(3 * 1000L);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        orderStatus.setOrderStatus(OrderStatusEnum.WAIT_DELIVER.type);
+        orderStatus.setOrderStatus(OrderStatus.OrderStatusEnum.WAIT_DELIVER.type);
         orderStatus.setCreatedTime(new Date());
         orderStatusMapper.insert(orderStatus);
 
-
-        final OrderVO orderVO = new OrderVO();
-        orderVO.setOrderId(orderId);
-        orderVO.setToBeRemovedList(toBeRemovedList);
-        return orderVO;
+        return OrderVO.builder()
+                .orderId(orderId)
+                .toBeRemovedList(toBeRemovedList)
+                .build();
     }
 
     @Override

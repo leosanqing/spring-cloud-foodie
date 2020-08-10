@@ -15,11 +15,11 @@ import java.util.List;
 public class BaseService {
     public PagedGridResult setterPage(List<?> list, int page) {
         PageInfo<?> pageList = new PageInfo<>(list);
-        PagedGridResult grid = new PagedGridResult();
-        grid.setPage(page);
-        grid.setRows(list);
-        grid.setTotal(pageList.getPages());
-        grid.setRecords(pageList.getTotal());
-        return grid;
+        return PagedGridResult.builder()
+                .page(page)
+                .rows(list)
+                .total(pageList.getPages())
+                .records(pageList.getTotal())
+                .build();
     }
 }

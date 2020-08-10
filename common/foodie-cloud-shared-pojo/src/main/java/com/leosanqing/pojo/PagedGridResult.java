@@ -1,5 +1,6 @@
 package com.leosanqing.pojo;
 
+import lombok.Builder;
 import lombok.Data;
 
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.List;
  * @Version: 1.0
  */
 @Data
+@Builder
 public class PagedGridResult {
     private int page;            // 当前页数
     private int total;            // 总页数
