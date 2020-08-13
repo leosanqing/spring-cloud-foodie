@@ -1,6 +1,8 @@
 package com.leosanqing;
 
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.WebApplicationType;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.client.SpringCloudApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
@@ -12,12 +14,10 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
  * @Description: Dashboard 启动类
  * @Version: 1.0
  */
-@SpringCloudApplication
+@SpringBootApplication
 @EnableDiscoveryClient
 public class GatewayApplication {
     public static void main(String[] args) {
-        new SpringApplicationBuilder(GatewayApplication.class)
-                .web(WebApplicationType.SERVLET)
-                .run(args);
+        SpringApplication.run(GatewayApplication.class, args);
     }
 }

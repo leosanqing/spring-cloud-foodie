@@ -46,32 +46,32 @@ public class RoutesConfiguration {
                                 .uri("lb://FOODIE-USER-SERVICE")
                 )
 
-                .route(
-                        r -> r
-                                .path(
-                                        "/items/**"
-                                )
-                                .uri("lb://FOODIE-ITEM-SERVICE")
-                )
-
-                .route(
-                        r -> r
-                                .path(
-                                        "/shopcart/**"
-                                )
-                                .uri("lb://FOODIE-CART-SERVICE")
-                )
-
-                .route(
-                        r -> r
-                                .path(
-                                        "/search/**",
-                                        "/index/**",
-                                        "/item/es/search",
-                                        "item/catItems"
-                                )
-                                .uri("lb://FOODIE-SEARCH-SERVICE")
-                )
+//                .route(
+//                        r -> r
+//                                .path(
+//                                        "/items/**"
+//                                )
+//                                .uri("lb://FOODIE-ITEM-SERVICE")
+//                )
+//
+//                .route(
+//                        r -> r
+//                                .path(
+//                                        "/shopcart/**"
+//                                )
+//                                .uri("lb://FOODIE-CART-SERVICE")
+//                )
+//
+//                .route(
+//                        r -> r
+//                                .path(
+//                                        "/search/**",
+//                                        "/index/**",
+//                                        "/item/es/search",
+//                                        "item/catItems"
+//                                )
+//                                .uri("lb://FOODIE-SEARCH-SERVICE")
+//                )
                 .build();
     }
 }

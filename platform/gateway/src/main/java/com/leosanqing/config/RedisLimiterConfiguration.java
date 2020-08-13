@@ -32,11 +32,10 @@ public class RedisLimiterConfiguration {
     @Bean("redisLimiterUser")
     @Primary
     public RedisRateLimiter redisLimiterUser() {
-        return new RedisRateLimiter(1, 20);
+        return new RedisRateLimiter(1, 1);
     }
 
     @Bean("redisLimiterItem")
-    @Primary
     public RedisRateLimiter redisLimiterItem() {
         return new RedisRateLimiter(20, 50);
     }

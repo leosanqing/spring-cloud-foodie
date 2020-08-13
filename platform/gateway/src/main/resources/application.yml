@@ -5,11 +5,13 @@ spring:
     gateway:
       discovery:
         locator:
-          lower-case-service-id: true
+#          lower-case-service-id: true
           enabled: false
   redis:
+    database: 1
+    host: localhost
     port: 6379
-    url: localhost
+
 
 
 eureka:
