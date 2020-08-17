@@ -48,7 +48,6 @@
         <module>platform/hystrix-dashboard-plat</module>
         <module>platform/config-server</module>
         <module>platform/gateway</module>
-
     </modules>
 
     <packaging>pom</packaging>

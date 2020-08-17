@@ -28,8 +28,6 @@ public class FdfsServiceImpl implements FdfsService {
         StorePath storePath = client.uploadFile(file.getInputStream(),
                 file.getSize(), fileExtendsName, null);
 
-
-        String fullPath = storePath.getFullPath();
-        return fullPath;
+        return storePath.getFullPath();
     }
 }

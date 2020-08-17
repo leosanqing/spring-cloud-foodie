@@ -76,9 +76,9 @@ public class CenterUserController extends BaseController {
         if (StringUtils.isNotBlank(filename)) {
             final String[] split = StringUtils.split(filename, "\\.");
             final String suffix = split[split.length - 1];
-            if (!suffix.equalsIgnoreCase("png")
-                    && !suffix.equalsIgnoreCase("jpg")
-                    && !suffix.equalsIgnoreCase("jpeg")) {
+            if (!"png".equalsIgnoreCase(suffix)
+                    && !"jpg".equalsIgnoreCase(suffix)
+                    && !"jpeg".equalsIgnoreCase(suffix)) {
 
                 return JSONResult.errorMsg("图片格式不正确");
             }
