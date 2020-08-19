@@ -1,4 +1,4 @@
-package com.leosanqing.index;
+package com.leosanqing.user;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.WireMockServer;
@@ -18,7 +18,7 @@ import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 
-@SpringBootTest(classes = IndexApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(classes = UserApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 public class BaseTest {
     public static final String S_ID_1 = "1";

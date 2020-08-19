@@ -48,6 +48,8 @@
         <module>platform/hystrix-dashboard-plat</module>
         <module>platform/config-server</module>
         <module>platform/gateway</module>
+        <module>domain/auth/foodie-auth-service</module>
+        <module>domain/auth/foodie-auth-api</module>
     </modules>
 
     <packaging>pom</packaging>
@@ -132,6 +134,19 @@
             <version>3.3.4</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>28.2-jre</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.6.2</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>

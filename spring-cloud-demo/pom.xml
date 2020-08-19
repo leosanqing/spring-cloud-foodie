@@ -27,6 +27,7 @@
         <module>bus/config-bus-client-demo</module>
         <module>gateway/auth-service-api0</module>
         <module>gateway/auth-service</module>
+        <module>gateway/gateway-sample</module>
     </modules>
 
 
