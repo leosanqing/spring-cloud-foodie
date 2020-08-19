@@ -1,18 +1,16 @@
 package com.leosanqing.order;
 
-import com.leosanqing.item.service.ItemCommentsService;
 import com.leosanqing.item.service.ItemService;
 import com.leosanqing.order.fallback.itemservice.ItemCommentsFeignClient;
 import com.leosanqing.user.service.AddressService;
 import com.leosanqing.user.service.UserService;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
-import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import tk.mybatis.spring.annotation.MapperScan;
 
 /**
  * Created by 半仙.

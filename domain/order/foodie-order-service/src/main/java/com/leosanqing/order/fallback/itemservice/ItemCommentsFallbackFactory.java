@@ -1,5 +1,7 @@
 package com.leosanqing.order.fallback.itemservice;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.collect.Lists;
 import com.leosanqing.item.pojo.vo.MyCommentVO;
 import com.leosanqing.pojo.PagedGridResult;
@@ -27,15 +29,18 @@ public class ItemCommentsFallbackFactory implements FallbackFactory<ItemComments
             }
 
             @Override
-            public PagedGridResult queryMyComments(String userId, Integer page, Integer pageSize) {
+            public IPage<MyCommentVO> queryMyComments(String userId, Integer page, Integer pageSize) {
+                IPage<MyCommentVO> commentVOPage = new Page<>();
+
                 MyCommentVO myCommentVO = new MyCommentVO();
                 myCommentVO.setContent("正在加载中");
 
-                PagedGridResult pagedGridResult = new PagedGridResult();
-                pagedGridResult.setRows(Lists.newArrayList(myCommentVO));
-                pagedGridResult.setPage(1);
-                pagedGridResult.setTotal(1);
-                return pagedGridResult;
+                commentVOPage.setRecords(Lists.newArrayList(myCommentVO));
+                commentVOPage.setCurrent(page);
+                commentVOPage.setTotal(1);
+                commentVOPage.setSize(pageSize);
+                commentVOPage.setPages(1);
+                return commentVOPage;
             }
         };
     }

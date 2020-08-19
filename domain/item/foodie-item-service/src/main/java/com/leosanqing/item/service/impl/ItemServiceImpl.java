@@ -1,6 +1,9 @@
 package com.leosanqing.item.service.impl;
 
-import com.github.pagehelper.PageHelper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageInfo;
 import com.leosanqing.enums.YesOrNo;
 import com.leosanqing.item.mapper.*;
@@ -18,9 +21,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RestController;
-import tk.mybatis.mapper.entity.Example;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -32,7 +35,7 @@ import java.util.concurrent.TimeUnit;
  */
 @Slf4j
 @RestController
-public class ItemServiceImpl implements ItemService {
+public class ItemServiceImpl extends ServiceImpl<ItemsMapper, Items> implements ItemService {
     @Autowired
     private ItemsMapper itemsMapper;
 
@@ -58,35 +61,44 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public Items queryItemsById(String itemId) {
 
-        return itemsMapper.selectByPrimaryKey(itemId);
+        return itemsMapper.selectById(itemId);
+
     }
 
     @Transactional(propagation = Propagation.SUPPORTS)
     @Override
     public List<ItemsImg> queryItemImgList(String itemId) {
 
-        Example example = new Example(ItemsImg.class);
-        Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("itemId", itemId);
-        return itemsImgMapper.selectByExample(example);
+        return itemsImgMapper.selectList(
+                Wrappers
+                        .lambdaQuery(ItemsImg.class)
+                        .eq(ItemsImg::getItemId, itemId)
+        );
+
     }
 
     @Transactional(propagation = Propagation.SUPPORTS)
     @Override
     public List<ItemsSpec> queryItemSpecList(String itemId) {
-        Example example = new Example(ItemsSpec.class);
-        Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("itemId", itemId);
-        return itemsSpecMapper.selectByExample(example);
+
+        return itemsSpecMapper.selectList(
+                Wrappers
+                        .lambdaQuery(ItemsSpec.class)
+                        .eq(ItemsSpec::getItemId, itemId)
+        );
+
     }
 
     @Transactional(propagation = Propagation.SUPPORTS)
     @Override
     public ItemsParam queryItemParam(String itemId) {
-        Example example = new Example(ItemsParam.class);
-        Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("itemId", itemId);
-        return itemsParamMapper.selectOneByExample(example);
+
+        return itemsParamMapper.selectOne(
+                Wrappers
+                        .lambdaQuery(ItemsParam.class)
+                        .eq(ItemsParam::getItemId, itemId)
+        );
+
     }
 
 
@@ -105,17 +117,21 @@ public class ItemServiceImpl implements ItemService {
             this.type = type;
             this.value = value;
         }
+
     }
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
     public CommentLevelCountsVO queryCommentCounts(String itemId) {
+
         Integer good = getCommentCounts(itemId, CommentLevel.GOOD.type);
         Integer normal = getCommentCounts(itemId, CommentLevel.NORMAL.type);
         Integer bad = getCommentCounts(itemId, CommentLevel.BAD.type);
+
         Integer total = good + bad + normal;
 
-        return CommentLevelCountsVO.builder()
+        return CommentLevelCountsVO
+                .builder()
                 .goodCounts(good)
                 .badCounts(bad)
                 .normalCounts(normal)
@@ -125,21 +141,25 @@ public class ItemServiceImpl implements ItemService {
 
     @Transactional(propagation = Propagation.SUPPORTS)
     @Override
-    public PagedGridResult queryPagedComments(String itemId, Integer level, Integer page, Integer pageSize) {
-        Map<String, Object> map = new HashMap<>(4);
-        map.put("itemId", itemId);
-        map.put("level", level);
+    public IPage<ItemCommentVO> queryPagedComments(
+            String itemId, Integer level,
+            Integer page, Integer pageSize
+    ) {
 
-        // 一定要写在sql执行之前，因为会对其进行拦截，加入自己的语句
-        PageHelper.startPage(page, pageSize);
-        List<ItemCommentVO> itemCommentVOS = itemsMapperCustom.queryItemComments(map);
+        IPage<ItemCommentVO> comments = itemsMapper.queryItemComments(
+                itemId, level, new Page(page, pageSize)
+        );
 
         // 进行脱敏处理
-        for (ItemCommentVO itemCommentVO : itemCommentVOS) {
-            itemCommentVO.setNickname(DesensitizationUtil.commonDisplay(itemCommentVO.getNickname()));
+        for (ItemCommentVO itemCommentVO : comments.getRecords()) {
+            itemCommentVO.setNickname(
+                    DesensitizationUtil
+                            .commonDisplay(itemCommentVO.getNickname())
+            );
         }
 
-        return setterPage(itemCommentVOS, page);
+        return comments;
+
     }
 
 //    @Override
@@ -177,13 +197,18 @@ public class ItemServiceImpl implements ItemService {
         grid.setTotal(pageList.getPages());
         grid.setRecords(pageList.getTotal());
         return grid;
+
     }
 
     private Integer getCommentCounts(String itemId, Integer level) {
-        ItemsComments comments = new ItemsComments();
-        comments.setCommentLevel(level);
-        comments.setItemId(itemId);
-        return itemsCommentsMapper.selectCount(comments);
+
+        return itemsCommentsMapper.selectCount(
+                Wrappers
+                        .lambdaQuery(ItemsComments.class)
+                        .eq(ItemsComments::getCommentLevel, level)
+                        .eq(ItemsComments::getItemId, itemId)
+        );
+
     }
 
 
@@ -226,28 +251,30 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<ShopcartVO> queryItemsBySpecIds(String specIds) {
 
-        String ids[] = specIds.split(",");
-        List<String> specIdsList = new ArrayList<>();
-        Collections.addAll(specIdsList, ids);
+        String[] ids = specIds.split(",");
+        return itemsMapperCustom.queryItemsBySpecIds(Arrays.asList(ids));
 
-        return itemsMapperCustom.queryItemsBySpecIds(specIdsList);
     }
 
     @Transactional(propagation = Propagation.SUPPORTS)
     @Override
     public ItemsSpec queryItemBySpecId(String specId) {
 
-        return itemsSpecMapper.selectByPrimaryKey(specId);
+        return itemsSpecMapper.selectById(specId);
+
     }
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
     public String queryItemImgByItemId(String itemId) {
-        final ItemsImg itemsImg = new ItemsImg();
-        itemsImg.setItemId(itemId);
-        itemsImg.setIsMain(YesOrNo.YES.type);
-        final ItemsImg itemsImg1 = itemsImgMapper.selectOne(itemsImg);
 
-        return itemsImg1 == null ? "" : itemsImg1.getUrl();
+        final ItemsImg itemsImg = itemsImgMapper.selectOne(
+                Wrappers
+                        .lambdaQuery(ItemsImg.class)
+                        .eq(ItemsImg::getItemId, itemId)
+                        .eq(ItemsImg::getIsMain, YesOrNo.YES.type)
+        );
+
+        return itemsImg == null ? "" : itemsImg.getUrl();
     }
 }

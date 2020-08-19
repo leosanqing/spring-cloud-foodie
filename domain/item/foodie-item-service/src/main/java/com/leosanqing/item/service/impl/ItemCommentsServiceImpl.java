@@ -1,11 +1,15 @@
 package com.leosanqing.item.service.impl;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
+import com.leosanqing.item.mapper.ItemsCommentsMapper;
 import com.leosanqing.item.mapper.ItemsCommentsMapperCustom;
+import com.leosanqing.item.pojo.ItemsComments;
 import com.leosanqing.item.pojo.vo.MyCommentVO;
 import com.leosanqing.item.service.ItemCommentsService;
 import com.leosanqing.pojo.PagedGridResult;
-import com.leosanqing.service.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,22 +29,23 @@ import java.util.Map;
  * @Version: 1.0
  */
 @RestController
-public class ItemCommentsServiceImpl extends BaseService implements ItemCommentsService {
+public class ItemCommentsServiceImpl
+        extends ServiceImpl<ItemsCommentsMapper, ItemsComments>
+        implements ItemCommentsService {
+
     @Autowired
     private ItemsCommentsMapperCustom itemsCommentsMapperCustom;
 
     @Transactional(propagation = Propagation.SUPPORTS)
     @Override
-    public PagedGridResult queryMyComments(@RequestParam("userId") String userId,
-                                           @RequestParam(value = "page", required = false) Integer page,
-                                           @RequestParam(value = "pageSize", required = false) Integer pageSize) {
-        Map<String, Object> map = new HashMap<>();
-        map.put("userId", userId);
+    public IPage<MyCommentVO> queryMyComments(
+            @RequestParam("userId") String userId,
+            @RequestParam(value = "page", required = false) Integer page,
+            @RequestParam(value = "pageSize", required = false) Integer pageSize
+    ) {
 
-        PageHelper.startPage(page, pageSize);
-        List<MyCommentVO> list = itemsCommentsMapperCustom.queryMyComments(map);
+        return baseMapper.queryMyComments(userId, new Page(page, pageSize));
 
-        return setterPage(list, page);
     }
 
     @Override

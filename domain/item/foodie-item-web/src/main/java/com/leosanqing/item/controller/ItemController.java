@@ -135,5 +135,6 @@ public class ItemController {
 
         List<ShopcartVO> shopCartBOS = itemService.queryItemsBySpecIds(itemSpecIds);
         return JSONResult.ok(shopCartBOS);
+
     }
 }

@@ -1,17 +1,29 @@
 package com.leosanqing.order.controller.center;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.leosanqing.config.MybatisPlusConfig;
+import com.leosanqing.order.pojo.OrderStatus;
 import com.leosanqing.order.pojo.Orders;
 import com.leosanqing.order.pojo.vo.OrderStatusCountsVO;
 import com.leosanqing.order.service.center.MyOrdersService;
 import com.leosanqing.pojo.JSONResult;
 import com.leosanqing.pojo.PagedGridResult;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 
 /**
  * @Author: leosanqing
@@ -24,27 +36,39 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("myorders")
 public class MyOrdersController {
 
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @ApiModel("")
+    public static class ListDealReq extends MybatisPlusConfig.PageReq {
+        String userId;
+
+        Integer orderStatus;
+
+    }
+
     @Autowired
     private MyOrdersService myOrdersService;
 
     @PostMapping("query")
     @ApiOperation(value = "查询我的订单", notes = "查询我的订单", httpMethod = "POST")
     public JSONResult queryUserInfo(
-            @ApiParam(name = "userId", value = "用户id")
-            @RequestParam String userId,
-            @ApiParam(name = "orderStatus", value = "订单状态")
-            @RequestParam Integer orderStatus,
-            @ApiParam(name = "page", value = "当前页数")
-            @RequestParam(defaultValue = "1") Integer page,
-            @ApiParam(name = "pageSize", value = "页面展示条数")
-            @RequestParam(defaultValue = "10") Integer pageSize
+            @RequestBody MyOrdersController.ListDealReq req
+
     ) {
-        if (StringUtils.isBlank(userId)) {
+        if (StringUtils.isBlank(req.getUserId())) {
             return JSONResult.errorMsg("用户名id为空");
         }
 
-        PagedGridResult pagedGridResult = myOrdersService.queryMyOrders(userId, orderStatus, page, pageSize);
-        return JSONResult.ok(pagedGridResult);
+        IPage<Orders> orders = myOrdersService.queryMyOrders(
+                req.getUserId(),
+                req.getOrderStatus(),
+                req.getPageNo(),
+                req.getPageSize()
+        );
+        return JSONResult.ok(orders);
     }
 
 
@@ -62,8 +86,8 @@ public class MyOrdersController {
             return JSONResult.errorMsg("用户名id为空");
         }
 
-        final PagedGridResult pagedGridResult = myOrdersService.getOrdersTrend(userId, page, pageSize);
-        return JSONResult.ok(pagedGridResult);
+        IPage<OrderStatus> ordersTrend = myOrdersService.getOrdersTrend(userId, page, pageSize);
+        return JSONResult.ok(ordersTrend);
     }
 
 

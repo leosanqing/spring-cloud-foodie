@@ -1,11 +1,13 @@
 package com.leosanqing.item.service;
 
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.leosanqing.item.pojo.Items;
 import com.leosanqing.item.pojo.ItemsImg;
 import com.leosanqing.item.pojo.ItemsParam;
 import com.leosanqing.item.pojo.ItemsSpec;
 import com.leosanqing.item.pojo.vo.CommentLevelCountsVO;
+import com.leosanqing.item.pojo.vo.ItemCommentVO;
 import com.leosanqing.item.pojo.vo.ShopcartVO;
 import com.leosanqing.pojo.PagedGridResult;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -82,10 +84,12 @@ public interface ItemService {
      * @return
      */
     @GetMapping("pagedComments")
-    PagedGridResult queryPagedComments(@RequestParam("itemId") String itemId,
-                                       @RequestParam(value = "level", required = false) Integer level,
-                                       @RequestParam(value = "page", required = false) Integer page,
-                                       @RequestParam(value = "pageSize", required = false) Integer pageSize);
+    IPage<ItemCommentVO> queryPagedComments(
+            @RequestParam("itemId") String itemId,
+            @RequestParam(value = "level", required = false) Integer level,
+            @RequestParam(value = "page", required = false) Integer page,
+            @RequestParam(value = "pageSize", required = false) Integer pageSize
+    );
 
     /**
      * 根据关键字查询商品
@@ -142,6 +146,8 @@ public interface ItemService {
      * @param buyCounts
      */
     @PostMapping("decreaseStock")
-    void decreaseItemSpecStock(@RequestParam("specId") String specId,
-                               @RequestParam("buyCounts") Integer buyCounts);
+    void decreaseItemSpecStock(
+            @RequestParam("specId") String specId,
+            @RequestParam("buyCounts") Integer buyCounts
+    );
 }

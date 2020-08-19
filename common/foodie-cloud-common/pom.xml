@@ -52,33 +52,39 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>5.1.41</version>
         </dependency>
-        <!-- mybatis -->
-        <dependency>
-            <groupId>org.mybatis.spring.boot</groupId>
-            <artifactId>mybatis-spring-boot-starter</artifactId>
-            <version>2.1.0</version>
-        </dependency>
+        <!--        &lt;!&ndash; mybatis &ndash;&gt;-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.mybatis.spring.boot</groupId>-->
+        <!--            <artifactId>mybatis-spring-boot-starter</artifactId>-->
+        <!--            <version>2.1.0</version>-->
+        <!--        </dependency>-->
 
-        <!-- 通用mapper逆向工具 -->
-        <dependency>
-            <groupId>tk.mybatis</groupId>
-            <artifactId>mapper-spring-boot-starter</artifactId>
-            <version>2.1.5</version>
-        </dependency>
+        <!--        &lt;!&ndash; 通用mapper逆向工具 &ndash;&gt;-->
+        <!--        <dependency>-->
+        <!--            <groupId>tk.mybatis</groupId>-->
+        <!--            <artifactId>mapper-spring-boot-starter</artifactId>-->
+        <!--            <version>2.1.5</version>-->
+        <!--        </dependency>-->
 
 
         <!-- mybatis plus 工具-->
-        <!--        <dependency>-->
-        <!--            <groupId>com.baomidou</groupId>-->
-        <!--            <artifactId>mybatis-plus-boot-starter</artifactId>-->
-        <!--            <version>3.3.2</version>-->
-        <!--        </dependency>-->
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-boot-starter</artifactId>
+            <version>3.3.2</version>
+        </dependency>
 
-        <!--        <dependency>-->
-        <!--            <groupId>com.baomidou</groupId>-->
-        <!--            <artifactId>mybatis-plus-generator</artifactId>-->
-        <!--            <version>3.3.2</version>-->
-        <!--        </dependency>-->
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-generator</artifactId>
+            <version>3.3.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.velocity</groupId>
+            <artifactId>velocity-engine-core</artifactId>
+            <version>2.2</version>
+        </dependency>
 
 
         <!--pagehelper -->
@@ -92,6 +98,32 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.tomakehurst</groupId>
+            <artifactId>wiremock-jre8</artifactId>
+            <version>2.26.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <scope>runtime</scope>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>core</artifactId>
+            <version>3.4.0</version>
         </dependency>
     </dependencies>
 </project>

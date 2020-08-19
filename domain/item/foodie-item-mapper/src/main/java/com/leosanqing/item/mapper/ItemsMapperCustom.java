@@ -20,8 +20,7 @@ public interface ItemsMapperCustom {
      * @param map
      * @return
      */
-    List<ItemCommentVO> queryItemComments(
-            @Param("paramsMap") Map<String, Object> map);
+    List<ItemCommentVO> queryItemComments(@Param("paramsMap") Map<String, Object> map);
 
     /**
      * 根据关键字查询商品
@@ -57,8 +56,10 @@ public interface ItemsMapperCustom {
      * @param specId
      * @return
      */
-    Integer decreaseItemSpecStock(@Param("itemSpecId") String specId,
-                                  @Param("pendingCount") Integer pendingCount);
+    Integer decreaseItemSpecStock(
+            @Param("itemSpecId") String specId,
+            @Param("pendingCount") Integer pendingCount
+    );
 
 
 }

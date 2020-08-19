@@ -15,4 +15,7 @@
         <result column="updated_time" property="updatedTime" jdbcType="TIMESTAMP"/>
         <result column="content" property="content" jdbcType="LONGVARCHAR"/>
     </resultMap>
+
+
+
 </mapper>

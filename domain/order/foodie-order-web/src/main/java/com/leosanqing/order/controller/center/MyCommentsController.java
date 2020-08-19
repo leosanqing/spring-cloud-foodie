@@ -1,7 +1,9 @@
 package com.leosanqing.order.controller.center;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.leosanqing.enums.YesOrNo;
 
+import com.leosanqing.item.pojo.vo.MyCommentVO;
 import com.leosanqing.item.service.ItemCommentsService;
 import com.leosanqing.order.pojo.OrderItems;
 import com.leosanqing.order.pojo.Orders;
@@ -99,8 +101,8 @@ public class MyCommentsController {
 //        PagedGridResult grid = restTemplate.getForObject(target, PagedGridResult.class);
 //        return JSONResult.ok(grid);
 
-        PagedGridResult result = itemCommentsService.queryMyComments(userId, page, pageSize);
-        return JSONResult.ok(result);
+        IPage<MyCommentVO> comments = itemCommentsService.queryMyComments(userId, page, pageSize);
+        return JSONResult.ok(comments);
     }
 
 

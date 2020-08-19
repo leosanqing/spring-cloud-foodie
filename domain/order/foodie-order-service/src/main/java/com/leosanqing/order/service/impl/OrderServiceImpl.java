@@ -1,6 +1,9 @@
 package com.leosanqing.order.service.impl;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.leosanqing.enums.YesOrNo;
 import com.leosanqing.item.pojo.ItemsSpec;
 import com.leosanqing.item.service.ItemService;
@@ -38,11 +41,7 @@ import java.util.List;
  */
 @Service
 @Slf4j
-public class OrderServiceImpl implements OrderService {
-
-    @Autowired
-    private OrdersMapper ordersMapper;
-
+public class OrderServiceImpl extends ServiceImpl<OrdersMapper, Orders> implements OrderService {
 
     @Autowired
     private ItemService itemService;
@@ -66,7 +65,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public OrderStatus queryOrderStatusInfo(String orderId) {
-        return orderStatusMapper.selectByPrimaryKey(orderId);
+        return orderStatusMapper.selectById(orderId);
     }
 
     @Override
@@ -74,10 +73,9 @@ public class OrderServiceImpl implements OrderService {
     public void closeOrder() {
 
         // 查询所有未付款订单，判断时间是否超时（1天），超时则关闭交易
-        OrderStatus queryOrder = OrderStatus.builder()
-                .orderStatus(OrderStatus.OrderStatusEnum.WAIT_PAY.type)
-                .build();
-        List<OrderStatus> list = orderStatusMapper.select(queryOrder);
+        LambdaQueryWrapper<OrderStatus> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(OrderStatus::getOrderStatus, OrderStatus.OrderStatusEnum.WAIT_PAY.type);
+        List<OrderStatus> list = orderStatusMapper.selectList(wrapper);
         for (OrderStatus os : list) {
             // 获得订单创建时间
             Date createdTime = os.getCreatedTime();
@@ -92,12 +90,13 @@ public class OrderServiceImpl implements OrderService {
 
     @Transactional(propagation = Propagation.REQUIRED)
     void doCloseOrder(String orderId) {
-        OrderStatus close = OrderStatus.builder()
-                .orderId(orderId)
-                .orderStatus(OrderStatus.OrderStatusEnum.CLOSE.type)
-                .closeTime(new Date())
-                .build();
-        orderStatusMapper.updateByPrimaryKeySelective(close);
+        orderStatusMapper.updateById(
+                OrderStatus.builder()
+                        .orderId(orderId)
+                        .orderStatus(OrderStatus.OrderStatusEnum.CLOSE.type)
+                        .closeTime(new Date())
+                        .build()
+        );
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
@@ -132,8 +131,12 @@ public class OrderServiceImpl implements OrderService {
                 .userId(userId)
                 .leftMsg(leftMsg)
                 .payMethod(payMethod)
-                .receiverAddress(userAddress.getProvince() + " " + userAddress.getCity() + " "
-                        + userAddress.getDistrict() + " " + userAddress.getDetail())
+                .receiverAddress(
+                        userAddress.getProvince() + " "
+                                + userAddress.getCity() + " "
+                                + userAddress.getDistrict() + " "
+                                + userAddress.getDetail()
+                )
                 .receiverMobile(userAddress.getMobile())
                 .receiverName(userAddress.getReceiver())
                 .postAmount(postAmount)
@@ -152,7 +155,7 @@ public class OrderServiceImpl implements OrderService {
          */
         orders.setTotalAmount(0);
         orders.setRealPayAmount(0);
-        ordersMapper.insert(orders);
+        baseMapper.insert(orders);
 
 
         // 2.1 循环根据商品规格表，保存到商品规格表
@@ -216,7 +219,7 @@ public class OrderServiceImpl implements OrderService {
 
         // 因为 userId 是分片项.不能修改，所以在更新时设置成 null
         orders.setUserId(null);
-        ordersMapper.updateByPrimaryKeySelective(orders);
+        lambdaUpdate().update(orders);
 
 //        ordersMapper.insert(orders);
 
@@ -229,6 +232,7 @@ public class OrderServiceImpl implements OrderService {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
         orderStatus.setOrderStatus(OrderStatus.OrderStatusEnum.WAIT_DELIVER.type);
         orderStatus.setCreatedTime(new Date());
         orderStatusMapper.insert(orderStatus);
