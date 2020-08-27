@@ -99,8 +99,7 @@ public class MyCommentsController {
 //        PagedGridResult grid = restTemplate.getForObject(target, PagedGridResult.class);
 //        return JSONResult.ok(grid);
 
-        PagedGridResult result = itemCommentsService.queryMyComments(userId, page, pageSize);
-        return JSONResult.ok(result);
+        return JSONResult.ok(itemCommentsService.queryMyComments(userId, page, pageSize));
     }
 
 
@@ -119,7 +118,7 @@ public class MyCommentsController {
         if (result.getStatus() != HttpStatus.OK.value()) {
             return result;
         }
-        if (orderItemList == null || orderItemList.isEmpty() || orderItemList.size() == 0) {
+        if (orderItemList == null || orderItemList.isEmpty()) {
             return JSONResult.errorMsg("评价列表为空");
         }
 

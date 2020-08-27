@@ -43,8 +43,9 @@ public class MyOrdersController {
             return JSONResult.errorMsg("用户名id为空");
         }
 
-        PagedGridResult pagedGridResult = myOrdersService.queryMyOrders(userId, orderStatus, page, pageSize);
-        return JSONResult.ok(pagedGridResult);
+        return JSONResult.ok(
+                myOrdersService.queryMyOrders(userId, orderStatus, page, pageSize)
+        );
     }
 
 
@@ -62,8 +63,7 @@ public class MyOrdersController {
             return JSONResult.errorMsg("用户名id为空");
         }
 
-        final PagedGridResult pagedGridResult = myOrdersService.getOrdersTrend(userId, page, pageSize);
-        return JSONResult.ok(pagedGridResult);
+        return JSONResult.ok(myOrdersService.getOrdersTrend(userId, page, pageSize));
     }
 
 

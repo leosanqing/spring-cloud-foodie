@@ -1,5 +1,7 @@
 package com.leosanqing.order.fallback.itemservice;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.collect.Lists;
 import com.leosanqing.item.pojo.vo.ItemCommentVO;
 import com.leosanqing.item.pojo.vo.MyCommentVO;
@@ -21,19 +23,18 @@ import java.util.Map;
 public class ItemCommentFallback implements ItemCommentsFeignClient {
     @Override
     public void saveComments(Map<String, Object> map) {
-
-
     }
 
     @Override
-    public PagedGridResult queryMyComments(String userId, Integer page, Integer pageSize) {
+    public IPage<MyCommentVO> queryMyComments(String userId, Integer page, Integer pageSize) {
         MyCommentVO myCommentVO = new MyCommentVO();
         myCommentVO.setContent("正在加载中");
 
-        PagedGridResult pagedGridResult = new PagedGridResult();
-        pagedGridResult.setRows(Lists.newArrayList(myCommentVO));
-        pagedGridResult.setPage(1);
-        pagedGridResult.setTotal(1);
-        return pagedGridResult;
+        Page<MyCommentVO> result = new Page<>();
+        result.setRecords(Lists.newArrayList(myCommentVO));
+        result.setCurrent(1);
+        result.setTotal(1);
+
+        return result;
     }
 }

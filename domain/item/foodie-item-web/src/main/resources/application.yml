@@ -13,7 +13,7 @@ spring:
     allow-bean-definition-overriding: true
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
-    driver-class-name: com.mysql.jdbc.Driver
+    driver-class-name: com.mysql.cj.jdbc.Driver
     #    url: jdbc:mysql://localhost:3306/foodie-shop-dev?useUnicode=true&characterEncoding=UTF-8&autoReconnect
     #    username: root
     #    password: root
@@ -39,9 +39,11 @@ spring:
 #   mybatis 配置
 #
 #####################
-mybatis:
+mybatis-plus:
   type-aliases-package: com.leosanqing.pojo  # 所有pojo的路径
   mapper-locations: classpath:mapper/*.xml   # 所有mapper的路径
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 mapper:
   mappers: com.leosanqing.my.mapper.MyMapper

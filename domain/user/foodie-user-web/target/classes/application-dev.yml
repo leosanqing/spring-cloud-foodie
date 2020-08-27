@@ -6,9 +6,9 @@ spring:
     #    url: jdbc:mysql://10.211.55.3:3306/foodie-shop-dev?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true
     username: root
     #    password: root
-#    url: ${mariadb.url}
+    #    url: ${mariadb.url}
     password: ${mariadb.password}
-#    password: 123456
+  #    password: 123456
 
   redis:
     database: 1

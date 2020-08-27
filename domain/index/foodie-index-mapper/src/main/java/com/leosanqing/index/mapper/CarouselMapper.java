@@ -1,8 +1,8 @@
 package com.leosanqing.index.mapper;
 
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.leosanqing.index.pojo.Carousel;
-import com.leosanqing.my.mapper.MyMapper;
 
-public interface CarouselMapper extends MyMapper<Carousel> {
+public interface CarouselMapper extends BaseMapper<Carousel> {
 }

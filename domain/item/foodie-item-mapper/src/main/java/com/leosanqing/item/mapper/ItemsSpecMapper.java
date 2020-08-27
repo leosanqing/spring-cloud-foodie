@@ -1,8 +1,8 @@
 package com.leosanqing.item.mapper;
 
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.leosanqing.item.pojo.ItemsSpec;
-import com.leosanqing.my.mapper.MyMapper;
 
-public interface ItemsSpecMapper extends MyMapper<ItemsSpec> {
+public interface ItemsSpecMapper extends BaseMapper<ItemsSpec> {
 }

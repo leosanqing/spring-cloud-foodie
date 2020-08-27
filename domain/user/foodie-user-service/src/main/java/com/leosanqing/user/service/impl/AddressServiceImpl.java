@@ -1,5 +1,8 @@
 package com.leosanqing.user.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.leosanqing.enums.YesOrNo;
 import com.leosanqing.user.mapper.UserAddressMapper;
 import com.leosanqing.user.pojo.UserAddress;
@@ -23,9 +26,7 @@ import java.util.List;
  * @Description: 收货地址相关服务
  */
 @RestController
-public class AddressServiceImpl implements AddressService {
-    @Autowired
-    private UserAddressMapper userAddressMapper;
+public class AddressServiceImpl extends ServiceImpl<UserAddressMapper, UserAddress> implements AddressService {
 
     @Autowired
     private Sid sid;
@@ -33,10 +34,9 @@ public class AddressServiceImpl implements AddressService {
     @Transactional(propagation = Propagation.SUPPORTS)
     @Override
     public List<UserAddress> queryAll(String userId) {
-
-        UserAddress userAddress = new UserAddress();
-        userAddress.setUserId(userId);
-        return userAddressMapper.select(userAddress);
+        return lambdaQuery()
+                .eq(UserAddress::getUserId, userId)
+                .list();
     }
 
     @Override
@@ -56,8 +56,7 @@ public class AddressServiceImpl implements AddressService {
         userAddress.setIsDefault(isDefault);
         userAddress.setCreatedTime(new Date());
         userAddress.setUpdatedTime(new Date());
-        userAddressMapper.insert(userAddress);
-
+        baseMapper.insert(userAddress);
     }
 
     @Override
@@ -72,18 +71,16 @@ public class AddressServiceImpl implements AddressService {
         userAddress.setUpdatedTime(new Date());
 
         // 这样空值不会覆盖数据库中已有的数据
-        userAddressMapper.updateByPrimaryKeySelective(userAddress);
+        baseMapper.updateById(userAddress);
     }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public void deleteUserAddress(String userId, String addressId) {
-
-        UserAddress userAddress = new UserAddress();
-        userAddress.setUserId(userId);
-        userAddress.setId(addressId);
-
-        userAddressMapper.delete(userAddress);
+        lambdaUpdate()
+                .eq(UserAddress::getId, addressId)
+                .eq(UserAddress::getUserId, userId)
+                .remove();
     }
 
     @Override
@@ -93,29 +90,33 @@ public class AddressServiceImpl implements AddressService {
         UserAddress userAddress = new UserAddress();
         userAddress.setUserId(userId);
         userAddress.setIsDefault(YesOrNo.YES.type);
-        List<UserAddress> select = userAddressMapper.select(userAddress);
+
+        List<UserAddress> select = lambdaQuery()
+                .eq(UserAddress::getUserId, userId)
+                .eq(UserAddress::getIsDefault, YesOrNo.YES.type)
+                .list();
 
         for (UserAddress address : select) {
             address.setIsDefault(YesOrNo.NO.type);
-            userAddressMapper.updateByPrimaryKeySelective(address);
+            baseMapper.updateById(address);
         }
 
-
         // 将现在的地址改为默认地址
-
-        UserAddress defaultAddress = new UserAddress();
-        defaultAddress.setUserId(userId);
-        defaultAddress.setIsDefault(YesOrNo.YES.type);
-        defaultAddress.setId(addressId);
-
-        userAddressMapper.updateByPrimaryKeySelective(defaultAddress);
+        baseMapper.updateById(
+                UserAddress
+                        .builder()
+                        .id(addressId)
+                        .userId(userId)
+                        .isDefault(YesOrNo.YES.type)
+                        .build()
+        );
     }
 
     @Override
     public UserAddress queryAddress(String userId, String addressId) {
-        UserAddress userAddress = new UserAddress();
-        userAddress.setUserId(userId);
-        userAddress.setId(addressId);
-        return userAddressMapper.selectOne(userAddress);
+        return lambdaQuery()
+                .eq(UserAddress::getUserId, userId)
+                .eq(UserAddress::getId, addressId)
+                .one();
     }
 }

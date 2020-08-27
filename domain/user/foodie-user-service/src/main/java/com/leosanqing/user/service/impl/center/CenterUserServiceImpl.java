@@ -1,6 +1,7 @@
 package com.leosanqing.user.service.impl.center;
 
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.leosanqing.user.mapper.UsersMapper;
 import com.leosanqing.user.pojo.Users;
 import com.leosanqing.user.pojo.bo.center.CenterUserBO;
@@ -22,15 +23,12 @@ import java.util.Date;
  * @Description: 用户中心服务实现类
  */
 @RestController
-public class CenterUserServiceImpl implements CenterUserService {
-
-    @Resource
-    private UsersMapper usersMapper;
+public class CenterUserServiceImpl extends ServiceImpl<UsersMapper, Users> implements CenterUserService {
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
     public Users queryUserInfo(String userId) {
-        Users users = usersMapper.selectByPrimaryKey(userId);
+        Users users = baseMapper.selectById(userId);
         users.setPassword(null);
         return users;
     }
@@ -42,7 +40,7 @@ public class CenterUserServiceImpl implements CenterUserService {
         BeanUtils.copyProperties(centerUserBO, users);
         users.setId(userId);
         users.setUpdatedTime(new Date());
-        usersMapper.updateByPrimaryKeySelective(users);
+        baseMapper.updateById(users);
 
         return queryUserInfo(userId);
     }
@@ -55,7 +53,7 @@ public class CenterUserServiceImpl implements CenterUserService {
                 .face(faceUrl)
                 .updatedTime(new Date())
                 .build();
-        usersMapper.updateByPrimaryKeySelective(users);
+        baseMapper.updateById(users);
 
         return queryUserInfo(userId);
 

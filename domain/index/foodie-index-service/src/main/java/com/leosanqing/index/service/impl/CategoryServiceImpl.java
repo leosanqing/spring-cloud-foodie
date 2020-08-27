@@ -1,20 +1,17 @@
 package com.leosanqing.index.service.impl;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.leosanqing.index.mapper.CategoryMapper;
-import com.leosanqing.index.mapper.CategoryMapperCustom;
 import com.leosanqing.index.pojo.Category;
 import com.leosanqing.index.pojo.vo.CategoryVO;
 import com.leosanqing.index.pojo.vo.NewItemsVO;
 import com.leosanqing.index.service.CategoryService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RestController;
-import tk.mybatis.mapper.entity.Example;
 
-import java.util.HashMap;
+
 import java.util.List;
-import java.util.Map;
 
 /**
  * @Author: rtliu
@@ -24,37 +21,25 @@ import java.util.Map;
  * @Version: 1.0
  */
 @RestController
-public class CategoryServiceImpl implements CategoryService {
-    @Autowired
-    private CategoryMapper categoryMapper;
-
-    @Autowired
-    private CategoryMapperCustom categoryMapperCustom;
+public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> implements CategoryService {
 
     @Transactional(propagation = Propagation.SUPPORTS)
     @Override
     public List<Category> queryAllRootLevelCat() {
-        Example example = new Example(Category.class);
-        Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("type", 1);
-
-        return categoryMapper.selectByExample(example);
+        return lambdaQuery()
+                .eq(Category::getType, 1)
+                .list();
     }
 
     @Transactional(propagation = Propagation.SUPPORTS)
     @Override
     public List<CategoryVO> getSubCatList(Integer rootCatId) {
-
-        return categoryMapperCustom.getSubCatList(rootCatId);
+        return baseMapper.getSubCatList(rootCatId);
     }
 
     @Transactional(propagation = Propagation.SUPPORTS)
     @Override
     public List<NewItemsVO> getSixNewItemsLazy(Integer rootCatId) {
-
-        Map<String, Object> map = new HashMap<>();
-        map.put("rootCatId", rootCatId);
-        return categoryMapperCustom.getSixNewItemsLazy(map);
-
+        return baseMapper.getSixNewItemsLazy(rootCatId);
     }
 }
