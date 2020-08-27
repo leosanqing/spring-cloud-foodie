@@ -1,46 +1,39 @@
 package com.leosanqing.order.service.impl.center;
 
-import com.github.pagehelper.PageHelper;
+
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.leosanqing.enums.YesOrNo;
 import com.leosanqing.order.mapper.OrderStatusMapper;
 import com.leosanqing.order.mapper.OrdersMapper;
-import com.leosanqing.order.mapper.OrdersMapperCustom;
 import com.leosanqing.order.pojo.OrderStatus;
 import com.leosanqing.order.pojo.Orders;
 import com.leosanqing.order.pojo.vo.MyOrdersVO;
 import com.leosanqing.order.pojo.vo.OrderStatusCountsVO;
 import com.leosanqing.order.service.center.MyOrdersService;
 import com.leosanqing.pojo.JSONResult;
-import com.leosanqing.pojo.PagedGridResult;
-import com.leosanqing.service.BaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import tk.mybatis.mapper.entity.Example;
 
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @RestController
-public class MyOrdersServiceImpl extends BaseService implements MyOrdersService {
-
-    @Autowired
-    public OrdersMapperCustom ordersMapperCustom;
-
-    @Autowired
-    public OrdersMapper ordersMapper;
+public class MyOrdersServiceImpl extends ServiceImpl<OrdersMapper, Orders> implements MyOrdersService {
 
     @Autowired
     public OrderStatusMapper orderStatusMapper;
 
     @Transactional(propagation = Propagation.SUPPORTS)
     @Override
-    public PagedGridResult queryMyOrders(String userId, Integer orderStatus,
-                                         Integer page, Integer pageSize) {
+    public IPage<MyOrdersVO> queryMyOrders(String userId, Integer orderStatus,
+                                           Integer page, Integer pageSize) {
 
         Map<String, Object> map = new HashMap<>();
         map.put("userId", userId);
@@ -48,22 +41,8 @@ public class MyOrdersServiceImpl extends BaseService implements MyOrdersService 
             map.put("orderStatus", orderStatus);
         }
 
-        PageHelper.startPage(page, pageSize);
-
-        List<MyOrdersVO> list = ordersMapperCustom.queryMyOrders(map);
-
-        return setterPage(list, page);
+        return baseMapper.queryMyOrders(map, new Page(page, pageSize));
     }
-
-//    private PagedGridResult setterPagedGrid(List<?> list, Integer page) {
-//        PageInfo<?> pageList = new PageInfo<>(list);
-//        PagedGridResult grid = new PagedGridResult();
-//        grid.setPage(page);
-//        grid.setRows(list);
-//        grid.setTotal(pageList.getPages());
-//        grid.setRecords(pageList.getTotal());
-//        return grid;
-//    }
 
     @Transactional(propagation = Propagation.REQUIRED)
     @Override
@@ -73,24 +52,23 @@ public class MyOrdersServiceImpl extends BaseService implements MyOrdersService 
         updateOrder.setOrderStatus(OrderStatus.OrderStatusEnum.WAIT_RECEIVE.type);
         updateOrder.setDeliverTime(new Date());
 
-        Example example = new Example(OrderStatus.class);
-        Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("orderId", orderId);
-        criteria.andEqualTo("orderStatus", OrderStatus.OrderStatusEnum.WAIT_DELIVER.type);
-
-        orderStatusMapper.updateByExampleSelective(updateOrder, example);
+        orderStatusMapper.update(
+                updateOrder,
+                Wrappers
+                        .lambdaUpdate(OrderStatus.class)
+                        .eq(OrderStatus::getOrderId, orderId)
+                        .eq(OrderStatus::getOrderStatus, OrderStatus.OrderStatusEnum.WAIT_DELIVER.type)
+        );
     }
 
     @Transactional(propagation = Propagation.SUPPORTS)
     @Override
     public Orders queryMyOrder(String userId, String orderId) {
-
-        Orders orders = Orders.builder()
-                .userId(userId)
-                .id(orderId)
-                .isDelete(YesOrNo.NO.type)
-                .build();
-        return ordersMapper.selectOne(orders);
+        return lambdaQuery()
+                .eq(Orders::getId, orderId)
+                .eq(Orders::getUserId, userId)
+                .eq(Orders::getIsDelete, YesOrNo.NO.type)
+                .one();
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
@@ -101,12 +79,14 @@ public class MyOrdersServiceImpl extends BaseService implements MyOrdersService 
         updateOrder.setOrderStatus(OrderStatus.OrderStatusEnum.SUCCESS.type);
         updateOrder.setSuccessTime(new Date());
 
-        Example example = new Example(OrderStatus.class);
-        Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("orderId", orderId);
-        criteria.andEqualTo("orderStatus", OrderStatus.OrderStatusEnum.WAIT_RECEIVE.type);
+        return 1 == orderStatusMapper.update(
+                updateOrder,
+                Wrappers
+                        .lambdaUpdate(OrderStatus.class)
+                        .eq(OrderStatus::getOrderId, orderId)
+                        .eq(OrderStatus::getOrderStatus, OrderStatus.OrderStatusEnum.WAIT_RECEIVE.type)
+        );
 
-        return 1 == orderStatusMapper.updateByExampleSelective(updateOrder, example);
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
@@ -117,13 +97,10 @@ public class MyOrdersServiceImpl extends BaseService implements MyOrdersService 
         updateOrder.setIsDelete(YesOrNo.YES.type);
         updateOrder.setUpdatedTime(new Date());
 
-        Example example = new Example(Orders.class);
-        Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("id", orderId);
-        criteria.andEqualTo("userId", userId);
-
-        return 1 == ordersMapper.updateByExampleSelective(updateOrder, example);
-
+        return lambdaUpdate()
+                .eq(Orders::getId, orderId)
+                .eq(Orders::getUserId, userId)
+                .update();
     }
 
     @Transactional(propagation = Propagation.SUPPORTS)
@@ -135,17 +112,17 @@ public class MyOrdersServiceImpl extends BaseService implements MyOrdersService 
 
         map.put("orderStatus", OrderStatus.OrderStatusEnum.WAIT_PAY.type);
 
-        int waitPayCounts = ordersMapperCustom.getMyOrderStatusCounts(map);
+        int waitPayCounts = baseMapper.getMyOrderStatusCounts(map);
 
         map.put("orderStatus", OrderStatus.OrderStatusEnum.WAIT_DELIVER.type);
-        int waitDeliverCounts = ordersMapperCustom.getMyOrderStatusCounts(map);
+        int waitDeliverCounts = baseMapper.getMyOrderStatusCounts(map);
 
         map.put("orderStatus", OrderStatus.OrderStatusEnum.WAIT_RECEIVE.type);
-        int waitReceiveCounts = ordersMapperCustom.getMyOrderStatusCounts(map);
+        int waitReceiveCounts = baseMapper.getMyOrderStatusCounts(map);
 
         map.put("orderStatus", OrderStatus.OrderStatusEnum.SUCCESS.type);
         map.put("isComment", YesOrNo.NO.type);
-        int waitCommentCounts = ordersMapperCustom.getMyOrderStatusCounts(map);
+        int waitCommentCounts = baseMapper.getMyOrderStatusCounts(map);
 
         return new OrderStatusCountsVO(
                 waitPayCounts,
@@ -157,15 +134,13 @@ public class MyOrdersServiceImpl extends BaseService implements MyOrdersService 
 
     @Transactional(propagation = Propagation.SUPPORTS)
     @Override
-    public PagedGridResult getOrdersTrend(String userId, Integer page, Integer pageSize) {
+    public IPage<OrderStatus> getOrdersTrend(String userId, Integer page, Integer pageSize) {
 
         Map<String, Object> map = new HashMap<>();
         map.put("userId", userId);
 
-        PageHelper.startPage(page, pageSize);
-        List<OrderStatus> list = ordersMapperCustom.getMyOrderTrend(map);
+        return baseMapper.getMyOrderTrend(map, new Page(page, pageSize));
 
-        return setterPage(list, page);
     }
 
     @Override

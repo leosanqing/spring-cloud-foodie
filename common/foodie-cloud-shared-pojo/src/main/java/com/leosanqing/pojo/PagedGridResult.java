@@ -1,7 +1,9 @@
 package com.leosanqing.pojo;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
@@ -14,9 +16,23 @@ import java.util.List;
  */
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class PagedGridResult {
-    private int page;            // 当前页数
-    private int total;            // 总页数
-    private long records;        // 总记录数
-    private List<?> rows;        // 每行显示的内容
+    /**
+     * 当前页数
+     */
+    private int page;
+    /**
+     * 总页数
+     */
+    private int total;
+    /**
+     * 总记录数
+     */
+    private long records;
+    /**
+     * 每行显示的内容
+     */
+    private List<?> rows;
 }

@@ -6,7 +6,7 @@ server:
 
 spring:
   profiles:
-    active: prod
+    active: dev
   application:
     name: foodie-order-service
   main:

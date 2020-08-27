@@ -98,10 +98,8 @@ public class IndexController {
             categoryVOList = categoryService.getSubCatList(rootCatId);
             if (categoryVOList == null || categoryVOList.size() == 0) {
                 redisOperator.set("subCat:" + rootCatId, JsonUtils.objectToJson(categoryVOList));
-
             } else {
                 redisOperator.set("subCat:" + rootCatId, JsonUtils.objectToJson(categoryVOList), 5 * 60 * 1000);
-
             }
         } else {
             categoryVOList = JsonUtils.jsonToList(subCatStr, CategoryVO.class);
@@ -114,7 +112,8 @@ public class IndexController {
     @ApiOperation(value = "查询每个分类下的六个最新商品", notes = "查询每个分类下的六个最新商品", httpMethod = "GET")
     public JSONResult getSixNewItems(
             @ApiParam(name = "rootCatId", value = "一级分类Id", required = true)
-            @PathVariable Integer rootCatId) {
+            @PathVariable Integer rootCatId
+    ) {
 
         if (rootCatId == null) {
             return JSONResult.errorMsg("商品分类不存在");

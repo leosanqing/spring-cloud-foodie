@@ -1,5 +1,7 @@
 package com.leosanqing.item.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.leosanqing.item.pojo.vo.MyCommentVO;
 import com.leosanqing.pojo.PagedGridResult;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
@@ -36,7 +38,9 @@ public interface ItemCommentsService {
      * @return
      */
     @GetMapping("myComments")
-    PagedGridResult queryMyComments(@RequestParam("userId") String userId,
-                                    @RequestParam(value = "page", required = false) Integer page,
-                                    @RequestParam(value = "pageSize", required = false) Integer pageSize);
+    IPage<MyCommentVO> queryMyComments(
+            @RequestParam("userId") String userId,
+            @RequestParam(value = "page", required = false) Integer page,
+            @RequestParam(value = "pageSize", required = false) Integer pageSize
+    );
 }

@@ -6,7 +6,7 @@ server:
 
 spring:
   profiles:
-    active: prod
+    active: dev
   application:
     name: foodie-user-service
     ## feign 当bean名字一样时，允许覆盖注册

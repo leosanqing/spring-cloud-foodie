@@ -1,7 +1,10 @@
 package com.leosanqing.order.service.center;
 
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.leosanqing.order.pojo.OrderStatus;
 import com.leosanqing.order.pojo.Orders;
+import com.leosanqing.order.pojo.vo.MyOrdersVO;
 import com.leosanqing.order.pojo.vo.OrderStatusCountsVO;
 import com.leosanqing.pojo.JSONResult;
 import com.leosanqing.pojo.PagedGridResult;
@@ -22,10 +25,12 @@ public interface MyOrdersService {
      * @return
      */
     @GetMapping("order/query")
-    PagedGridResult queryMyOrders(@RequestParam("userId") String userId,
-                                  @RequestParam("orderStatus") Integer orderStatus,
-                                  @RequestParam(value = "page", required = false) Integer page,
-                                  @RequestParam(value = "pageSize", required = false) Integer pageSize);
+    IPage<MyOrdersVO> queryMyOrders(
+            @RequestParam("userId") String userId,
+            @RequestParam("orderStatus") Integer orderStatus,
+            @RequestParam(value = "page", required = false) Integer page,
+            @RequestParam(value = "pageSize", required = false) Integer pageSize
+    );
 
     /**
      * @Description: 订单状态 --> 商家发货
@@ -41,8 +46,7 @@ public interface MyOrdersService {
      * @return
      */
     @GetMapping("order/details")
-    Orders queryMyOrder(@RequestParam("userId") String userId,
-                        @RequestParam("orderId") String orderId);
+    Orders queryMyOrder(@RequestParam("userId") String userId, @RequestParam("orderId") String orderId);
 
     /**
      * 更新订单状态 —> 确认收货
@@ -60,8 +64,7 @@ public interface MyOrdersService {
      * @return
      */
     @DeleteMapping("order")
-    boolean deleteOrder(@RequestParam("userId") String userId,
-                        @RequestParam("orderId") String orderId);
+    boolean deleteOrder(@RequestParam("userId") String userId, @RequestParam("orderId") String orderId);
 
     /**
      * 查询用户订单数
@@ -80,12 +83,13 @@ public interface MyOrdersService {
      * @return
      */
     @GetMapping("order/trend")
-    PagedGridResult getOrdersTrend(@RequestParam("userId") String userId,
-                                   @RequestParam("page") Integer page,
-                                   @RequestParam("pageSize") Integer pageSize);
+    IPage<OrderStatus> getOrdersTrend(
+            @RequestParam("userId") String userId,
+            @RequestParam("page") Integer page,
+            @RequestParam("pageSize") Integer pageSize
+    );
 
     @GetMapping("checkUserOrder")
-    JSONResult checkUserOrder(@RequestParam("userId") String userId,
-                              @RequestParam("orderId") String orderId);
+    JSONResult checkUserOrder(@RequestParam("userId") String userId, @RequestParam("orderId") String orderId);
 
 }

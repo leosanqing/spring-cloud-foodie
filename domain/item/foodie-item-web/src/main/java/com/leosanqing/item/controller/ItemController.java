@@ -1,9 +1,5 @@
 package com.leosanqing.item.controller;
 
-import com.leosanqing.item.pojo.Items;
-import com.leosanqing.item.pojo.ItemsImg;
-import com.leosanqing.item.pojo.ItemsParam;
-import com.leosanqing.item.pojo.ItemsSpec;
 import com.leosanqing.item.pojo.vo.ItemInfoVO;
 import com.leosanqing.item.pojo.vo.ShopcartVO;
 import com.leosanqing.item.service.ItemService;
@@ -25,33 +21,31 @@ import java.util.List;
  * @Version: 1.0
  */
 @RestController
-@RequestMapping("items")
+@RequestMapping("/items")
 @Api(value = "商品接口", tags = {"商品展示的相关接口"})
 public class ItemController {
 
     @Autowired
     private ItemService itemService;
 
-    @GetMapping("info/{itemId}")
+    @GetMapping("/info/{itemId}")
     @ApiOperation(value = "商品详情", notes = "商品详情", httpMethod = "GET")
     public JSONResult subCats(
             @ApiParam(name = "itemId", value = "商品Id", required = true)
-            @PathVariable String itemId) {
+            @PathVariable String itemId
+    ) {
 
         if (StringUtils.isBlank(itemId)) {
             return JSONResult.errorMsg("商品id为空");
         }
 
-        Items items = itemService.queryItemsById(itemId);
-        List<ItemsImg> itemsImgList = itemService.queryItemImgList(itemId);
-        List<ItemsSpec> itemsSpecList = itemService.queryItemSpecList(itemId);
-        ItemsParam itemsParam = itemService.queryItemParam(itemId);
-
-        ItemInfoVO itemInfoVO = new ItemInfoVO();
-        itemInfoVO.setItem(items);
-        itemInfoVO.setItemImgList(itemsImgList);
-        itemInfoVO.setItemSpecList(itemsSpecList);
-        itemInfoVO.setItemParams(itemsParam);
+        ItemInfoVO itemInfoVO = ItemInfoVO
+                .builder()
+                .item(itemService.queryItemsById(itemId))
+                .itemImgList(itemService.queryItemImgList(itemId))
+                .itemSpecList(itemService.queryItemSpecList(itemId))
+                .itemParams(itemService.queryItemParam(itemId))
+                .build();
         return JSONResult.ok(itemInfoVO);
     }
 
@@ -60,8 +54,8 @@ public class ItemController {
     @ApiOperation(value = "商品评价等级", notes = "商品评价等级", httpMethod = "GET")
     public JSONResult getCommentsCount(
             @ApiParam(name = "itemId", value = "商品Id", required = true)
-            @RequestParam String itemId) {
-
+            @RequestParam String itemId
+    ) {
         if (StringUtils.isBlank(itemId)) {
             return JSONResult.errorMsg("商品id为空");
         }
@@ -74,12 +68,12 @@ public class ItemController {
             @ApiParam(name = "itemId", value = "商品Id", required = true)
             @RequestParam String itemId,
             @ApiParam(name = "level", value = "商品等级", required = false)
-            @RequestParam Integer level,
+            @RequestParam(required = false) Integer level,
             @ApiParam(name = "page", value = "第几页", required = false)
-            @RequestParam(defaultValue = "1") Integer page,
+            @RequestParam(defaultValue = "1", required = false) Integer page,
             @ApiParam(name = "pageSize", value = "每页个数", required = false)
-            @RequestParam(defaultValue = "10") Integer pageSize) {
-
+            @RequestParam(defaultValue = "10", required = false) Integer pageSize
+    ) {
         if (StringUtils.isBlank(itemId)) {
             return JSONResult.errorMsg("商品id为空");
         }
@@ -125,7 +119,7 @@ public class ItemController {
 
     @GetMapping("refresh")
     @ApiOperation(value = "刷新购物车", notes = "刷新购物车", httpMethod = "GET")
-    public JSONResult queryItemsBySpecIds(
+    public JSONResult<List<ShopcartVO>> queryItemsBySpecIds(
             @ApiParam(name = "itemSpecIds", value = "商品规格Id列表", required = true)
             @RequestParam String itemSpecIds
     ) {

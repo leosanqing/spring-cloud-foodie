@@ -1,6 +1,6 @@
 package com.leosanqing.service;
 
-import com.github.pagehelper.PageInfo;
+
 import com.leosanqing.pojo.PagedGridResult;
 
 import java.util.List;
@@ -14,12 +14,13 @@ import java.util.List;
  */
 public class BaseService {
     public PagedGridResult setterPage(List<?> list, int page) {
-        PageInfo<?> pageList = new PageInfo<>(list);
-        return PagedGridResult.builder()
-                .page(page)
-                .rows(list)
-                .total(pageList.getPages())
-                .records(pageList.getTotal())
-                .build();
+        return null;
+//        PageInfo<?> pageList = new PageInfo<>(list);
+//        return PagedGridResult.builder()
+//                .page(page)
+//                .rows(list)
+//                .total(pageList.getPages())
+//                .records(pageList.getTotal())
+//                .build();
     }
 }

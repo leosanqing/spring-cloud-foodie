@@ -1,6 +1,8 @@
 package com.leosanqing.order.service.impl.center;
 
 
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.leosanqing.enums.YesOrNo;
 import com.leosanqing.item.service.ItemCommentsService;
 import com.leosanqing.order.fallback.itemservice.ItemCommentsFeignClient;
@@ -25,13 +27,10 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-public class MyCommentsServiceImpl extends BaseService implements MyCommentsService {
+public class MyCommentsServiceImpl extends ServiceImpl<OrdersMapper, Orders> implements MyCommentsService {
 
     @Autowired
     public OrderItemsMapper orderItemsMapper;
-
-    @Autowired
-    public OrdersMapper ordersMapper;
 
     @Autowired
     public OrderStatusMapper orderStatusMapper;
@@ -53,15 +52,16 @@ public class MyCommentsServiceImpl extends BaseService implements MyCommentsServ
     @Transactional(propagation = Propagation.SUPPORTS)
     @Override
     public List<OrderItems> queryPendingComment(String orderId) {
-        OrderItems query = new OrderItems();
-        query.setOrderId(orderId);
-        return orderItemsMapper.select(query);
+        return orderItemsMapper.selectList(
+                Wrappers
+                        .lambdaQuery(OrderItems.class)
+                        .eq(OrderItems::getOrderId, orderId)
+        );
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
     @Override
-    public void saveComments(String orderId, String userId,
-                             List<OrderItemsCommentBO> commentList) {
+    public void saveComments(String orderId, String userId, List<OrderItemsCommentBO> commentList) {
 
         // 1. 保存评价 items_comments
         for (OrderItemsCommentBO oic : commentList) {
@@ -86,14 +86,14 @@ public class MyCommentsServiceImpl extends BaseService implements MyCommentsServ
                 .id(orderId)
                 .isComment(YesOrNo.YES.type)
                 .build();
-        ordersMapper.updateByPrimaryKeySelective(order);
+        baseMapper.updateById(order);
 
         // 3. 修改订单状态表的留言时间 order_status
         OrderStatus orderStatus = OrderStatus.builder()
                 .orderId(orderId)
                 .commentTime(new Date())
                 .build();
-        orderStatusMapper.updateByPrimaryKeySelective(orderStatus);
+        orderStatusMapper.updateById(orderStatus);
     }
 
     //  移到了itemCommentService
