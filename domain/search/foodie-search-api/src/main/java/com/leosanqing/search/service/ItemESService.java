@@ -1,7 +1,8 @@
 package com.leosanqing.search.service;
 
 
-import com.leosanqing.pojo.PagedGridResult;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.leosanqing.search.pojo.Items;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,8 +28,8 @@ public interface ItemESService {
      * @return
      */
     @PostMapping("searchItems")
-    PagedGridResult searchItems(@RequestParam String keywords,
-                                @RequestParam String sort,
-                                @RequestParam Integer page,
-                                @RequestParam Integer pageSize);
+    IPage<Items> searchItems(@RequestParam String keywords,
+                             @RequestParam String sort,
+                             @RequestParam Integer page,
+                             @RequestParam Integer pageSize);
 }

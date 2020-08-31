@@ -16,14 +16,32 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("cart-api")
 public interface CartService {
 
+    /**
+     * 添加商品至购物车
+     *
+     * @param userId
+     * @param shopcartBO
+     * @return
+     */
     @PostMapping("addItem")
-    boolean addItemToCart(@RequestParam("userId") String userId,
-                          @RequestBody ShopCartBO shopcartBO);
+    boolean addItemToCart(@RequestParam("userId") String userId, @RequestBody ShopCartBO shopcartBO);
 
+    /**
+     * 从购物车中删除商品
+     *
+     * @param userId
+     * @param itemSpecId
+     * @return
+     */
     @PostMapping("removeItem")
-    boolean removeItemFromCart(@RequestParam("userId") String userId,
-                               @RequestParam("itemSpecId") String itemSpecId);
+    boolean removeItemFromCart(@RequestParam("userId") String userId, @RequestParam("itemSpecId") String itemSpecId);
 
+    /**
+     * 清空购物车
+     *
+     * @param userId
+     * @return
+     */
     @PostMapping("clearCart")
     boolean clearCart(@RequestParam("userId") String userId);
 

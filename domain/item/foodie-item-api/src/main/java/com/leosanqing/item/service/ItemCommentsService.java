@@ -2,11 +2,9 @@ package com.leosanqing.item.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.leosanqing.item.pojo.vo.MyCommentVO;
-import com.leosanqing.pojo.PagedGridResult;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Map;
 
 /**

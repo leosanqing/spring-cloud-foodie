@@ -126,16 +126,16 @@ public class RedisOperator {
 //		nginx -> keepalive
 //		redis -> pipeline
 
-        List<Object> result = redisTemplate.executePipelined((RedisCallback<String>) connection -> {
-            StringRedisConnection src = (StringRedisConnection) connection;
+        return redisTemplate.executePipelined(
+                (RedisCallback<String>) connection -> {
+                    StringRedisConnection src = (StringRedisConnection) connection;
 
-            for (String k : keys) {
-                src.get(k);
-            }
-            return null;
-        });
-
-        return result;
+                    for (String k : keys) {
+                        src.get(k);
+                    }
+                    return null;
+                }
+        );
     }
 
 

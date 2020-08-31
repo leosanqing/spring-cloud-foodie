@@ -117,8 +117,7 @@ public class NetUtil {
 
     public static String remoteAddress(SocketChannel channel) {
         SocketAddress addr = channel.socket().getRemoteSocketAddress();
-        String res = String.format("%s", addr);
-        return res;
+        return String.format("%s", addr);
     }
 
     public static String localAddress(SocketChannel channel) {

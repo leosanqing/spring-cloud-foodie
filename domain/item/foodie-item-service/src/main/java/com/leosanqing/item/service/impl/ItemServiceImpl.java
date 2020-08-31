@@ -11,7 +11,6 @@ import com.leosanqing.item.pojo.vo.CommentLevelCountsVO;
 import com.leosanqing.item.pojo.vo.ItemCommentVO;
 import com.leosanqing.item.pojo.vo.ShopcartVO;
 import com.leosanqing.item.service.ItemService;
-import com.leosanqing.pojo.PagedGridResult;
 import com.leosanqing.utils.DesensitizationUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
@@ -22,7 +21,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -47,7 +49,6 @@ public class ItemServiceImpl extends ServiceImpl<ItemsMapper, Items> implements 
 
     @Resource
     private ItemsCommentsMapper itemsCommentsMapper;
-
 
     @Autowired
     private RedissonClient redisson;
@@ -128,10 +129,7 @@ public class ItemServiceImpl extends ServiceImpl<ItemsMapper, Items> implements 
         map.put("itemId", itemId);
         map.put("level", level);
 
-        // 一定要写在sql执行之前，因为会对其进行拦截，加入自己的语句
-
         IPage<ItemCommentVO> comments = baseMapper.queryItemComments(map, new Page(page, pageSize));
-
 
         // 进行脱敏处理
         for (ItemCommentVO itemCommentVO : comments.getRecords()) {
@@ -208,8 +206,6 @@ public class ItemServiceImpl extends ServiceImpl<ItemsMapper, Items> implements 
              */
             rLock.unlock();
         }
-
-//
     }
 
     @Transactional(propagation = Propagation.SUPPORTS)

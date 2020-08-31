@@ -26,8 +26,7 @@ public interface CenterUserService {
      * @param centerUserBO
      */
     @PutMapping("profile/{userId}")
-    Users updateUserInfo(@PathVariable("userId") String userId,
-                         @RequestBody CenterUserBO centerUserBO);
+    Users updateUserInfo(@PathVariable("userId") String userId, @RequestBody CenterUserBO centerUserBO);
 
     /**
      * 用户头像更新
@@ -37,6 +36,5 @@ public interface CenterUserService {
      * @return
      */
     @PostMapping("updatePhoto")
-    Users updateUserFace(@RequestParam("userId") String userId,
-                         @RequestParam("faceUrl") String faceUrl);
+    Users updateUserFace(@RequestParam("userId") String userId, @RequestParam("faceUrl") String faceUrl);
 }

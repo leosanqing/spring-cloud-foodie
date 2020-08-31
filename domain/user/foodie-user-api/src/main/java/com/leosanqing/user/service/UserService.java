@@ -17,7 +17,7 @@ public interface UserService {
     boolean queryUsernameIsExist(@RequestParam("username") String username);
 
     /**
-     * 判断用户名是否存在
+     * 创建用户
      */
     @PostMapping("user")
     Users createUser(@RequestBody UserBO userBO);
@@ -26,6 +26,5 @@ public interface UserService {
      * 检索用户名和密码是否匹配，用于登录
      */
     @GetMapping("verify")
-    Users queryUserForLogin(@RequestParam("username") String username,
-                            @RequestParam("password") String password);
+    Users queryUserForLogin(@RequestParam("username") String username, @RequestParam("password") String password) throws Exception;
 }
