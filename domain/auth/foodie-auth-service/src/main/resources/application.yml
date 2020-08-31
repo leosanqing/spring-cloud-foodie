@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: foodie-auth-service
+  redis:
+    host: localhost
+    database: 0
+
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:20000/eureka/
+
+server:
+  port: 10006
+
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  security:
+    enabled: false
+
+

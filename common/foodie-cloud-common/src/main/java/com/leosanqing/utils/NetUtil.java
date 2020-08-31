@@ -28,8 +28,6 @@ public class NetUtil {
         int port = 80;
         if (blocks.length > 1) {
             port = Integer.parseInt(blocks[1]);
-        } else {
-            address += ":" + port; //use default 80
         }
         return String.format("%s:%d", host, port);
     }

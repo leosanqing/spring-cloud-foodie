@@ -39,18 +39,10 @@ spring:
 #   mybatis 配置
 #
 #####################
-mybatis:
+mybatis-plus:
   type-aliases-package: com.leosanqing.pojo  # 所有pojo的路径
   mapper-locations: classpath:mapper/*.xml   # 所有mapper的路径
 
-mapper:
-  mappers: com.leosanqing.my.mapper.MyMapper
-  not-empty: false  # 在进行数据库的操作
-  identity: MYSQL
-
-pagehelper:
-  helper-dialect: mysql
-  support-methods-arguments: true
 
 hystrix:
   command:
