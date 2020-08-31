@@ -1,10 +1,7 @@
 package com.leosanqing.test.item.controller;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.leosanqing.item.controller.ItemController;
-import com.leosanqing.item.pojo.vo.ShopcartVO;
-import com.leosanqing.pojo.JSONResult;
 import com.leosanqing.test.item.BaseTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,9 +13,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-
-import java.nio.charset.StandardCharsets;
-import java.util.List;
 
 /**
  * @Author: rtliu
@@ -35,14 +29,14 @@ public class ItemControllerTest extends BaseTest {
 
     @InjectMocks
     @Autowired
-    ItemController companyController;
+    ItemController itemController;
 
     @Override
     @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
 
-        companyController = (ItemController) AopProxyUtils.getSingletonTarget(companyController);
+        itemController = (ItemController) AopProxyUtils.getSingletonTarget(itemController);
         MockitoAnnotations.initMocks(this);
     }
 
@@ -107,7 +101,5 @@ public class ItemControllerTest extends BaseTest {
                 )
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
-
-
     }
 }

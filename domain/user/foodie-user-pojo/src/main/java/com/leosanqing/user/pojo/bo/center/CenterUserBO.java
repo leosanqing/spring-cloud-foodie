@@ -14,11 +14,12 @@ public class CenterUserBO {
 
     @ApiModelProperty(value = "用户名", name = "username", example = "json", required = false)
     private String username;
+
     @ApiModelProperty(value = "密码", name = "password", example = "123456", required = false)
     private String password;
+
     @ApiModelProperty(value = "确认密码", name = "confirmPassword", example = "123456", required = false)
     private String confirmPassword;
-
 
     @NotBlank(message = "用户昵称不能为空")
     @Length(max = 12, message = "用户昵称不能超过12位")
@@ -41,6 +42,7 @@ public class CenterUserBO {
     @Max(value = 2, message = "性别选择不正确")
     @ApiModelProperty(value = "性别", name = "sex", example = "0:女 1:男 2:保密", required = false)
     private Integer sex;
+
     @ApiModelProperty(value = "生日", name = "birthday", example = "1900-01-01", required = false)
     private Date birthday;
 

@@ -1,5 +1,5 @@
 server:
-  port: 8088
+#  port: 8088
   max-http-header-size: 80KB
   tomcat:
     uri-encoding: UTF-8

@@ -25,51 +25,51 @@
 
     <select id="queryMyOrders" parameterType="Map" resultType="com.leosanqing.order.pojo.vo.MyOrdersVO">
         SELECT
-            od.id as orderId,
-            od.created_time as createdTime,
-            od.pay_method as payMethod,
-            od.real_pay_amount as realPayAmount,
-            od.post_amount as postAmount,
-            os.order_status as orderStatus,
-            oi.item_id as itemId,
-            oi.item_name as itemName,
-            oi.item_img as itemImg,
-            oi.item_spec_name as itemSpecName,
-            oi.buy_counts as buyCounts,
-            oi.price as price,
-            od.is_comment as isComment
+        od.id as orderId,
+        od.created_time as createdTime,
+        od.pay_method as payMethod,
+        od.real_pay_amount as realPayAmount,
+        od.post_amount as postAmount,
+        os.order_status as orderStatus,
+        oi.item_id as itemId,
+        oi.item_name as itemName,
+        oi.item_img as itemImg,
+        oi.item_spec_name as itemSpecName,
+        oi.buy_counts as buyCounts,
+        oi.price as price,
+        od.is_comment as isComment
         FROM
-            orders od
+        orders od
         LEFT JOIN
-            order_status os ON od.id = os.order_id
+        order_status os ON od.id = os.order_id
         LEFT JOIN
-            order_items oi ON od.id = oi.order_id
+        order_items oi ON od.id = oi.order_id
         WHERE
-            od.user_id = #{paramsMap.userId}
-            AND
-            od.is_delete = 0
-            <if test="paramsMap.orderStatus != null">
-                and os.order_status = #{paramsMap.orderStatus}
-            </if>
+        od.user_id = #{paramsMap.userId}
+        AND
+        od.is_delete = 0
+        <if test="paramsMap.orderStatus != null">
+            and os.order_status = #{paramsMap.orderStatus}
+        </if>
         ORDER BY
-            od.updated_time ASC
+        od.updated_time ASC
     </select>
 
 
     <select id="getMyOrderStatusCounts" parameterType="Map" resultType="int">
         SELECT
-            count(1)
+        count(1)
         FROM
-            orders o
+        orders o
         LEFT JOIN
-            order_status os on o.id = os.order_id
+        order_status os on o.id = os.order_id
         WHERE
-            o.user_id = #{paramsMap.userId}
-            AND
-            os.order_status = #{paramsMap.orderStatus}
-            <if test="paramsMap.isComment != null">
-                and o.is_comment = #{paramsMap.isComment}
-            </if>
+        o.user_id = #{paramsMap.userId}
+        AND
+        os.order_status = #{paramsMap.orderStatus}
+        <if test="paramsMap.isComment != null">
+            and o.is_comment = #{paramsMap.isComment}
+        </if>
     </select>
 
 

@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.collect.Lists;
 import com.leosanqing.item.pojo.vo.MyCommentVO;
-import com.leosanqing.pojo.PagedGridResult;
 import feign.hystrix.FallbackFactory;
 import org.springframework.stereotype.Component;
 

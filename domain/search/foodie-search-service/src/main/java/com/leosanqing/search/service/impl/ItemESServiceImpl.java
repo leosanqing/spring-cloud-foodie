@@ -1,7 +1,8 @@
 package com.leosanqing.search.service.impl;
 
 
-import com.leosanqing.pojo.PagedGridResult;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.leosanqing.search.pojo.Items;
 import com.leosanqing.search.service.ItemESService;
 import org.elasticsearch.action.search.SearchResponse;
@@ -39,7 +40,7 @@ public class ItemESServiceImpl implements ItemESService {
     private ElasticsearchTemplate template;
 
     @Override
-    public PagedGridResult searchItems(String keywords, String sort, Integer page, Integer pageSize) {
+    public IPage<Items> searchItems(String keywords, String sort, Integer page, Integer pageSize) {
 
         String preTag = "<font color='red'>";
         String postTag = "</font>";
@@ -101,12 +102,12 @@ public class ItemESServiceImpl implements ItemESService {
             }
         });
 
-        return PagedGridResult.builder()
-                .page(page + 1)
-                .records(itemsAggregatedPage.getTotalElements())
-                .total(itemsAggregatedPage.getTotalPages())
-                .rows(itemsAggregatedPage.getContent())
-                .build();
+        IPage<Items> page1 = new Page<>();
+        page1.setPages(itemsAggregatedPage.getTotalPages());
+        page1.setTotal(itemsAggregatedPage.getTotalElements());
+        page1.setCurrent(page + 1);
+        page1.setRecords(itemsAggregatedPage.getContent());
+        return page1;
     }
 
 

@@ -44,8 +44,7 @@ public interface AddressService {
      * @param addressId
      */
     @DeleteMapping("address")
-    void deleteUserAddress(@RequestParam("userId") String userId,
-                           @RequestParam("addressId") String addressId);
+    void deleteUserAddress(@RequestParam("userId") String userId, @RequestParam("addressId") String addressId);
 
     /**
      * 修改默认地址
@@ -54,8 +53,7 @@ public interface AddressService {
      * @param addressId
      */
     @PostMapping("setDefaultAddress")
-    void updateToBeDefault(@RequestParam("userId") String userId,
-                           @RequestParam("addressId") String addressId);
+    void updateToBeDefault(@RequestParam("userId") String userId, @RequestParam("addressId") String addressId);
 
     /**
      * 根据用户id和地址id，查询具体的用户地址对象信息
@@ -65,6 +63,8 @@ public interface AddressService {
      * @return
      */
     @GetMapping("queryAddress")
-    UserAddress queryAddress(@RequestParam("userId") String userId,
-                             @RequestParam(value = "addressId", required = false) String addressId);
+    UserAddress queryAddress(
+            @RequestParam("userId") String userId,
+            @RequestParam(value = "addressId", required = false) String addressId
+    );
 }

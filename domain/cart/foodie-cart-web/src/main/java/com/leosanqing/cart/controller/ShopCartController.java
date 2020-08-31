@@ -52,7 +52,6 @@ public class ShopCartController {
             return JSONResult.errorMsg("");
         }
 
-        System.out.println(shopCartBO);
         cartService.addItemToCart(userId, shopCartBO);
 
         return JSONResult.ok();
@@ -65,11 +64,8 @@ public class ShopCartController {
             @ApiParam(name = "userId", value = "用户id")
             @RequestParam String userId,
             @ApiParam(name = "itemSpecId", value = "购物车中的商品规格")
-            @RequestBody String itemSpecId,
-            HttpServletRequest request,
-            HttpServletResponse response
+            @RequestBody String itemSpecId
     ) {
-
         if (StringUtils.isBlank(userId) || StringUtils.isBlank(itemSpecId)) {
             return JSONResult.errorMsg("参数不能为空");
         }
@@ -85,7 +81,6 @@ public class ShopCartController {
             @RequestParam String userId
     ) {
         cartService.clearCart(userId);
-
         return JSONResult.ok();
     }
 }

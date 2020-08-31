@@ -1,6 +1,7 @@
 package com.leosanqing.pojo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Data;
 
 /**
  * @author 慕课网 - 风间影月
@@ -20,7 +21,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  * @Copyright: Copyright (c) 2020
  * @Company: www.imooc.com
  */
-public class JSONResult<R> {
+@Data
+public class JSONResult {
 
     // 定义jackson对象
 //    private static final ObjectMapper MAPPER = new ObjectMapper();
@@ -32,7 +34,7 @@ public class JSONResult<R> {
     private String msg;
 
     // 响应中的数据
-    private R data;
+    private Object data;
 
     @JsonIgnore
     private String ok;    // 不使用
@@ -77,20 +79,20 @@ public class JSONResult<R> {
 
     }
 
-    public JSONResult(Integer status, String msg, R data) {
+    public JSONResult(Integer status, String msg, Object data) {
         this.status = status;
         this.msg = msg;
         this.data = data;
     }
 
-    public JSONResult(Integer status, String msg, R data, String ok) {
+    public JSONResult(Integer status, String msg, Object data, String ok) {
         this.status = status;
         this.msg = msg;
         this.data = data;
         this.ok = ok;
     }
 
-    public JSONResult(R data) {
+    public JSONResult(Object data) {
         this.status = 200;
         this.msg = "OK";
         this.data = data;
@@ -100,36 +102,6 @@ public class JSONResult<R> {
         return this.status == 200;
     }
 
-    public Integer getStatus() {
-        return status;
-    }
 
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
-    public String getMsg() {
-        return msg;
-    }
-
-    public void setMsg(String msg) {
-        this.msg = msg;
-    }
-
-    public Object getData() {
-        return data;
-    }
-
-    public void setData(R data) {
-        this.data = data;
-    }
-
-    public String getOk() {
-        return ok;
-    }
-
-    public void setOk(String ok) {
-        this.ok = ok;
-    }
 
 }

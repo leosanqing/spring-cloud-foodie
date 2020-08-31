@@ -48,28 +48,24 @@ public class DesensitizationUtil {
             stringBuilder.append(value.charAt(len - 1));
         } else {
             if (pamatwo <= 0) {
-                stringBuilder.append(value.substring(0, 1));
+                stringBuilder.append(value, 0, 1);
                 stringBuilder.append(SYMBOL);
-                stringBuilder.append(value.substring(len - 1, len));
+                stringBuilder.append(value, len - 1, len);
 
             } else if (pamatwo >= SIZE / 2 && SIZE + 1 != len) {
                 int pamafive = (len - SIZE) / 2;
-                stringBuilder.append(value.substring(0, pamafive));
+                stringBuilder.append(value, 0, pamafive);
                 for (int i = 0; i < SIZE; i++) {
                     stringBuilder.append(SYMBOL);
                 }
-                if ((pamathree == 0 && SIZE / 2 == 0) || (pamathree != 0 && SIZE % 2 != 0)) {
-                    stringBuilder.append(value.substring(len - pamafive, len));
-                } else {
-                    stringBuilder.append(value.substring(len - (pamafive + 1), len));
-                }
+                stringBuilder.append(value, len - (pamafive + 1), len);
             } else {
                 int pamafour = len - 2;
-                stringBuilder.append(value.substring(0, 1));
+                stringBuilder.append(value, 0, 1);
                 for (int i = 0; i < pamafour; i++) {
                     stringBuilder.append(SYMBOL);
                 }
-                stringBuilder.append(value.substring(len - 1, len));
+                stringBuilder.append(value, len - 1, len);
             }
         }
         return stringBuilder.toString();

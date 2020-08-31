@@ -35,9 +35,9 @@ public class UserServiceImpl extends ServiceImpl<UsersMapper, Users> implements 
     @Transactional(propagation = Propagation.SUPPORTS)
     @Override
     public boolean queryUsernameIsExist(String username) {
-        return !lambdaQuery()
+        return lambdaQuery()
                 .eq(Users::getUsername, username)
-                .isEmptyOfEntity();
+                .one() != null;
     }
 
     @Override
@@ -66,10 +66,10 @@ public class UserServiceImpl extends ServiceImpl<UsersMapper, Users> implements 
 
     @Override
     @Transactional(propagation = Propagation.SUPPORTS)
-    public Users queryUserForLogin(String username, String password) {
+    public Users queryUserForLogin(String username, String password) throws Exception {
         return lambdaQuery()
                 .eq(Users::getUsername, username)
-                .eq(Users::getPassword, password)
+                .eq(Users::getPassword, MD5Utils.getMD5Str(password))
                 .one();
     }
 }

@@ -27,13 +27,12 @@ import static com.leosanqing.controller.BaseController.SHOP_CART;
 @Slf4j
 @RestController
 public class CartServiceImpl implements CartService {
+
     @Autowired
     private RedisOperator redisOperator;
 
-
     @Override
-    public boolean addItemToCart(@RequestParam("userId") String userId,
-                                 @RequestBody ShopCartBO ShopCartBO) {
+    public boolean addItemToCart(@RequestParam("userId") String userId, @RequestBody ShopCartBO ShopCartBO) {
         // 前端用户在登录的情况下，添加商品到购物车，会同时在后端同步购物车到redis缓存
         // 需要判断当前购物车中包含已经存在的商品，如果存在则累加购买数量
         String shopcartJson = redisOperator.get(SHOP_CART + ":" + userId);
@@ -85,7 +84,6 @@ public class CartServiceImpl implements CartService {
             // 覆盖现有redis中的购物车
             redisOperator.set(SHOP_CART + ":" + userId, JsonUtils.objectToJson(shopcartList));
         }
-
         return true;
     }
 

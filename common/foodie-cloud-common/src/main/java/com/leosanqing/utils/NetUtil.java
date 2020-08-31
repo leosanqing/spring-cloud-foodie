@@ -28,8 +28,6 @@ public class NetUtil {
         int port = 80;
         if (blocks.length > 1) {
             port = Integer.parseInt(blocks[1]);
-        } else {
-            address += ":" + port; //use default 80
         }
         return String.format("%s:%d", host, port);
     }
@@ -117,8 +115,7 @@ public class NetUtil {
 
     public static String remoteAddress(SocketChannel channel) {
         SocketAddress addr = channel.socket().getRemoteSocketAddress();
-        String res = String.format("%s", addr);
-        return res;
+        return String.format("%s", addr);
     }
 
     public static String localAddress(SocketChannel channel) {
