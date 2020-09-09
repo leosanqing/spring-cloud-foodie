@@ -6,7 +6,6 @@ import com.leosanqing.order.pojo.OrderStatus;
 import com.leosanqing.order.pojo.Orders;
 import com.leosanqing.order.pojo.vo.MyOrdersVO;
 import com.leosanqing.order.pojo.vo.OrderStatusCountsVO;
-import com.leosanqing.pojo.JSONResult;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
@@ -89,6 +88,6 @@ public interface MyOrdersService {
     );
 
     @GetMapping("checkUserOrder")
-    JSONResult checkUserOrder(@RequestParam("userId") String userId, @RequestParam("orderId") String orderId);
+    Orders checkUserOrder(@RequestParam("userId") String userId, @RequestParam("orderId") String orderId);
 
 }

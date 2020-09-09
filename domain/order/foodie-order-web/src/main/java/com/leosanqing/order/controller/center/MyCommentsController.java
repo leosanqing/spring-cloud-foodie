@@ -1,23 +1,20 @@
 package com.leosanqing.order.controller.center;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.leosanqing.enums.YesOrNo;
-
+import com.leosanqing.item.pojo.vo.MyCommentVO;
 import com.leosanqing.item.service.ItemCommentsService;
 import com.leosanqing.order.pojo.OrderItems;
 import com.leosanqing.order.pojo.Orders;
 import com.leosanqing.order.pojo.bo.center.OrderItemsCommentBO;
 import com.leosanqing.order.service.center.MyCommentsService;
 import com.leosanqing.order.service.center.MyOrdersService;
-import com.leosanqing.pojo.JSONResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 
@@ -35,44 +32,38 @@ public class MyCommentsController {
     @Autowired
     private MyCommentsService myCommentsService;
 
-    @Autowired
-    private LoadBalancerClient client;
+    //    @Autowired
+//    private LoadBalancerClient client;
     @Autowired
     private MyOrdersService myOrdersService;
-    @Autowired
-    private RestTemplate restTemplate;
+//    @Autowired
+//    private RestTemplate restTemplate;
 
     @Autowired
     private ItemCommentsService itemCommentsService;
 
+
     @PostMapping("pending")
     @ApiOperation(value = "查询我的评价", notes = "查询我的评价", httpMethod = "POST")
-    public JSONResult pending(
+    public List<OrderItems> pending(
             @ApiParam(name = "userId", value = "用户id")
             @RequestParam String userId,
             @ApiParam(name = "orderId", value = "订单Id")
             @RequestParam String orderId
 
     ) {
-        final JSONResult result = checkUserOrder(userId, orderId);
-        if (result.getStatus() != HttpStatus.OK.value()) {
-
-            return result;
-        }
-
-        final Orders orders = (Orders) result.getData();
+        Orders orders = checkUserOrder(userId, orderId);
         if (orders.getIsComment() == YesOrNo.YES.type) {
-            return JSONResult.errorMsg("商品已经评价过");
+            throw new RuntimeException("商品已经评价过");
         }
 
-        final List<OrderItems> orderItems = myCommentsService.queryPendingComment(orderId);
-        return JSONResult.ok(orderItems);
+        return myCommentsService.queryPendingComment(orderId);
     }
 
 
     @PostMapping("query")
     @ApiOperation(value = "查询我的评价", notes = "查询我的评价", httpMethod = "POST")
-    public JSONResult queryMyComment(
+    public IPage<MyCommentVO> queryMyComment(
             @ApiParam(name = "userId", value = "用户id")
             @RequestParam String userId,
             @ApiParam(name = "page", value = "当前页数")
@@ -82,7 +73,7 @@ public class MyCommentsController {
 
     ) {
         if (StringUtils.isBlank(userId)) {
-            return JSONResult.errorMsg("用户Id为空");
+            throw new RuntimeException("用户Id为空");
         }
 
 
@@ -97,13 +88,13 @@ public class MyCommentsController {
 //        PagedGridResult grid = restTemplate.getForObject(target, PagedGridResult.class);
 //        return JSONResult.ok(grid);
 
-        return JSONResult.ok(itemCommentsService.queryMyComments(userId, page, pageSize));
+        return itemCommentsService.queryMyComments(userId, page, pageSize);
     }
 
 
     @PostMapping("saveList")
     @ApiOperation(value = "保存评价列表", notes = "保存评价列表", httpMethod = "POST")
-    public JSONResult saveList(
+    public void saveList(
             @ApiParam(name = "userId", value = "用户id")
             @RequestParam String userId,
             @ApiParam(name = "orderId", value = "订单Id")
@@ -112,16 +103,13 @@ public class MyCommentsController {
             @RequestBody List<OrderItemsCommentBO> orderItemList
 
     ) {
-        final JSONResult result = checkUserOrder(userId, orderId);
-        if (result.getStatus() != HttpStatus.OK.value()) {
-            return result;
-        }
+        checkUserOrder(userId, orderId);
+
         if (orderItemList == null || orderItemList.isEmpty()) {
-            return JSONResult.errorMsg("评价列表为空");
+            throw new RuntimeException("评价列表为空");
         }
 
         myCommentsService.saveComments(userId, orderId, orderItemList);
-        return JSONResult.ok();
     }
 
 
@@ -132,18 +120,18 @@ public class MyCommentsController {
      * @param orderId
      * @return
      */
-    private JSONResult checkUserOrder(String userId, String orderId) {
+    private Orders checkUserOrder(String userId, String orderId) {
         if (StringUtils.isBlank(userId)) {
-            return JSONResult.errorMsg("用户ID不能为空");
+            throw new RuntimeException("用户ID不能为空");
         }
         if (StringUtils.isBlank(orderId)) {
-            return JSONResult.errorMsg("订单ID不能为空");
+            throw new RuntimeException("订单ID不能为空");
         }
         final Orders orders = myOrdersService.queryMyOrder(userId, orderId);
         if (orders == null) {
-            return JSONResult.errorMsg("查询到订单为空");
+            throw new RuntimeException("查询到订单为空");
         }
-        return JSONResult.ok(orders);
+        return orders;
     }
 
 

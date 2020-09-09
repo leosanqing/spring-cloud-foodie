@@ -2,7 +2,6 @@ package com.leosanqing.user.controller;
 
 import com.leosanqing.controller.BaseController;
 
-import com.leosanqing.pojo.JSONResult;
 import com.leosanqing.user.UserApplicationProperties;
 import com.leosanqing.user.pojo.Users;
 import com.leosanqing.user.pojo.bo.UserBO;
@@ -18,11 +17,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.MDC;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 /**
@@ -33,6 +34,7 @@ import java.util.UUID;
 @RequestMapping("passport")
 @Api(value = "注册登录", tags = {"用于注册的接口"})
 @Slf4j
+@Validated
 public class PassportController extends BaseController {
 
     @Autowired
@@ -41,13 +43,12 @@ public class PassportController extends BaseController {
     @Autowired
     private RedisOperator redisOperator;
 
-
     @Autowired
     private UserApplicationProperties properties;
 
     @GetMapping("usernameIsExist")
     @ApiOperation(value = "用户名是否存在", notes = "用户名是否存在", httpMethod = "GET")
-    public JSONResult usernameIsExist(@RequestParam String username) {
+    public void usernameIsExist(@RequestParam @NotBlank(message = "用户名不能为空") String username) {
 
         InputMDC.inputMDC();
         log.info("这是条info信息");
@@ -55,55 +56,38 @@ public class PassportController extends BaseController {
         log.error("这是条error信息");
         MDC.put("0001", "234");
 
-        // 判断用户名为空
-        if (StringUtils.isBlank(username)) {
-
-            return JSONResult.errorMsg("用户名不能为空");
-        }
-
         // 判断用户名是否存在
         boolean isExist = userService.queryUsernameIsExist(username);
         if (isExist) {
-            return JSONResult.errorMsg("用户名已存在");
+            throw new RuntimeException("用户名已存在");
         }
-
-        return JSONResult.ok();
     }
 
     @PostMapping("regist")
     @ApiOperation(value = "用户注册", notes = "用户注册", httpMethod = "POST")
-    public JSONResult register(@RequestBody UserBO userBO,
-                               HttpServletRequest request,
-                               HttpServletResponse response) {
+    public void register(
+            @Validated @RequestBody UserBO userBO,
+            HttpServletRequest request,
+            HttpServletResponse response
+    ) {
         String username = userBO.getUsername();
         String password = userBO.getPassword();
         String confirmPassword = userBO.getConfirmPassword();
 
-
         if (properties.isDisable()) {
-            return JSONResult.errorMsg("当前时间不可以注册");
-        }
-
-        // 判断用户名密码为空
-        if (StringUtils.isBlank(username) || StringUtils.isBlank(password)
-                || StringUtils.isBlank(confirmPassword)) {
-            return JSONResult.errorMsg("用户名或密码不能为空");
+            throw new RuntimeException("当前时间不可以注册");
         }
 
         // 查询用户名是否存在
         boolean isExist = userService.queryUsernameIsExist(username);
         if (isExist) {
-            return JSONResult.errorMsg("用户名已存在");
+            throw new RuntimeException("用户名已存在");
         }
 
-        // 判断密码长度不能短于6
-        if (password.length() < 6) {
-            return JSONResult.errorMsg("密码长度不能小于6");
-        }
 
         // 判断两次密码是否一致
         if (!password.equals(confirmPassword)) {
-            return JSONResult.errorMsg("两次密码不一致");
+            throw new RuntimeException("两次密码不一致");
         }
 
         // 实现注册
@@ -120,9 +104,6 @@ public class PassportController extends BaseController {
 
         // 同步数据到redis
         syncShopCartData(users.getId(), request, response);
-
-        return JSONResult.ok();
-
     }
 
 
@@ -156,30 +137,23 @@ public class PassportController extends BaseController {
 
     )
     @ApiOperation(value = "用户登录", notes = "用户登录", httpMethod = "POST")
-    public JSONResult login(@RequestBody UserBO userBO,
-                            HttpServletRequest request,
-                            HttpServletResponse response) {
+    public UsersVO login(
+            @Validated @RequestBody
+                    UserBO userBO,
+            HttpServletRequest request, HttpServletResponse response) {
         String username = userBO.getUsername();
         String password = userBO.getPassword();
-
-
-        // 判断用户名密码为空
-        if (StringUtils.isBlank(username)
-                || StringUtils.isBlank(password)) {
-            return JSONResult.errorMsg("用户名或密码不能为空");
-        }
 
         // 查询用户名是否存在
         Users users = null;
         try {
-            users = userService.queryUserForLogin(username,
-                    MD5Utils.getMD5Str(password));
+            users = userService.queryUserForLogin(username, MD5Utils.getMD5Str(password));
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         if (users == null) {
-            return JSONResult.errorMsg("用户名或密码不正确");
+            throw new RuntimeException("用户名或密码不正确");
         }
 
 
@@ -193,14 +167,13 @@ public class PassportController extends BaseController {
 
         //  同步数据到redis
         syncShopCartData(usersVO.getId(), request, response);
-        return JSONResult.ok(usersVO);
-
+        return usersVO;
     }
 
 
-    private JSONResult loginFail(UserBO userBO, HttpServletRequest request, HttpServletResponse response,
-                                 Throwable throwable) {
-        return JSONResult.errorMsg("验证码输入错误(test)");
+    private void loginFail(UserBO userBO, HttpServletRequest request, HttpServletResponse response,
+                           Throwable throwable) {
+        throw new RuntimeException("验证码输入错误(test)");
     }
 
 
@@ -211,8 +184,7 @@ public class PassportController extends BaseController {
      * @param request
      * @param response
      */
-    private void syncShopCartData(String userId, HttpServletRequest request,
-                                  HttpServletResponse response) {
+    private void syncShopCartData(String userId, HttpServletRequest request, HttpServletResponse response) {
         /**
          *  1. redis 为空，cookie 也为空。
          *                cookie 不为空，将 cookie的数据直接存入redis
@@ -226,11 +198,9 @@ public class PassportController extends BaseController {
 
         // redis为为空，cookie不为空
         if (StringUtils.isBlank(shopCartRedisStr)) {
-
             if (StringUtils.isNotBlank(cookieValue)) {
                 redisOperator.set(SHOP_CART + ":" + userId, cookieValue);
             }
-
         } else {
             if (StringUtils.isNotBlank(cookieValue)) {
             } else {
@@ -243,7 +213,6 @@ public class PassportController extends BaseController {
         // 生成token，用于分布式会话
         String uuid = UUID.randomUUID().toString().trim();
         redisOperator.set(REDIS_USER_TOKEN + ":" + users.getId(), uuid);
-
 
         UsersVO usersVO = new UsersVO();
         BeanUtils.copyProperties(users, usersVO);
@@ -272,18 +241,16 @@ public class PassportController extends BaseController {
 
     @PostMapping("logout")
     @ApiOperation(value = "退出登录", notes = "退出登录", httpMethod = "POST")
-    public JSONResult logout(@RequestParam String userId,
-                             HttpServletRequest request,
-                             HttpServletResponse response) {
-
+    public void logout(
+            @RequestParam String userId,
+            HttpServletRequest request,
+            HttpServletResponse response
+    ) {
 
         CookieUtils.deleteCookie(request, response, "user");
 
         // 清除redis数据
         redisOperator.del(REDIS_USER_TOKEN + ":" + userId);
-
-        return JSONResult.ok();
-
     }
 
 

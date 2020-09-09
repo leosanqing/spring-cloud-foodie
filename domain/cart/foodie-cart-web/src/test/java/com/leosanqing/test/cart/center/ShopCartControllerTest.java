@@ -1,6 +1,5 @@
 package com.leosanqing.test.cart.center;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Strings;
 import com.leosanqing.cart.controller.ShopCartController;

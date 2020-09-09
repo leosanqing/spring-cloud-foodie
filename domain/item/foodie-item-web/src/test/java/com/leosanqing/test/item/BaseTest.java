@@ -22,14 +22,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 @SpringBootTest(classes = ItemApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 public class BaseTest {
-    public static final String S_ID_1 = "1";
-    public static final String S_TEST = "test";
-    public static final String S_TEMP = "temp";
-    public static final String S_VERIFY_CODE = "123456";
-    public static final String S_CETCXL = "cetcxl";
-    public static final String S_SOCIAL_CREDIT_CODE = "1234567890ABCDEFGH";
-    public static final String S_SHOP = "shop";
-    public static final String S_PHONE = "19999999999";
 
     public static WireMockServer wireMockServer;
 

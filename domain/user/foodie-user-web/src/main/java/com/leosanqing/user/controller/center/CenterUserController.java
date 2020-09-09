@@ -1,7 +1,8 @@
 package com.leosanqing.user.controller.center;
 
+import com.leosanqing.constant.IResultCode;
 import com.leosanqing.controller.BaseController;
-import com.leosanqing.pojo.JSONResult;
+import com.leosanqing.exception.BaseRuntimeException;
 import com.leosanqing.user.pojo.Users;
 import com.leosanqing.user.pojo.bo.center.CenterUserBO;
 import com.leosanqing.user.pojo.vo.UsersVO;
@@ -19,17 +20,21 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import java.io.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+
+import static com.leosanqing.constant.CommonResultCode.FILE_TYPE_NOT_SUPPORT;
 
 /**
  * @Author: leosanqing
@@ -40,6 +45,7 @@ import java.util.UUID;
 @Api
 @RestController
 @RequestMapping("userInfo")
+@Validated
 public class CenterUserController extends BaseController {
 //    public static final String USER_FACE_IMG_LOCATION =
 //            File.separator + "Users" +
@@ -61,25 +67,14 @@ public class CenterUserController extends BaseController {
 
     @PostMapping("update")
     @ApiOperation(value = "更新用户信息", notes = "更新用户信息", httpMethod = "POST")
-    public JSONResult updateUserInfo(
+    public UsersVO updateUserInfo(
             @ApiParam(name = "userId", value = "用户id")
-            @RequestParam String userId,
+            @RequestParam @NotBlank(message = "userId 不能为空") String userId,
             @ApiParam(name = "centerUserBO", value = "用户中心bo")
-            @RequestBody @Valid CenterUserBO centerUserBO,
-            BindingResult result,
+            @RequestBody @Validated CenterUserBO centerUserBO,
             HttpServletRequest request,
             HttpServletResponse response
     ) {
-        if (StringUtils.isBlank(userId)) {
-            return JSONResult.errorMsg("用户名id为空");
-        }
-
-        if (result.hasErrors()) {
-
-            final Map<String, String> errorMap = getErrors(result);
-            return JSONResult.errorMap(errorMap);
-        }
-
         Users users = centerUserService.updateUserInfo(userId, centerUserBO);
 
         // 后续增加令牌 整合进redis
@@ -89,7 +84,7 @@ public class CenterUserController extends BaseController {
         CookieUtils.setCookie(request, response, "user",
                 JsonUtils.objectToJson(usersVO), true);
 
-        return JSONResult.ok(usersVO);
+        return usersVO;
     }
 
     private UsersVO convertUsersVO(Users users) {
@@ -107,8 +102,9 @@ public class CenterUserController extends BaseController {
 
     @PostMapping("uploadFace")
     @ApiOperation(value = "查询用户信息", notes = "查询用户信息", httpMethod = "POST")
-    public JSONResult queryUserInfo(
+    public void queryUserInfo(
             @ApiParam(name = "userId", value = "用户id", required = true)
+            @NotBlank(message = "userId 不能为空")
             @RequestParam String userId,
             @ApiParam(name = "file", value = "用户头像", required = true)
                     MultipartFile file,
@@ -116,13 +112,10 @@ public class CenterUserController extends BaseController {
             HttpServletResponse response
 
     ) {
-        if (StringUtils.isBlank(userId)) {
-            return JSONResult.errorMsg("用户名id为空");
-        }
         String userFaceImgPrefix = File.separator + userId;
 
         if (file == null) {
-            return JSONResult.errorMsg("文件不能为空");
+            throw new RuntimeException("文件不能为空");
         }
 
 
@@ -130,42 +123,40 @@ public class CenterUserController extends BaseController {
         if (StringUtils.isNotBlank(filename)) {
             final String[] split = StringUtils.split(filename, "\\.");
             final String suffix = split[split.length - 1];
-            if (!suffix.equalsIgnoreCase("png")
-                    && !suffix.equalsIgnoreCase("jpg")
-                    && !suffix.equalsIgnoreCase("jpeg")) {
+            if (!"png".equalsIgnoreCase(suffix)
+                    && !"jpg".equalsIgnoreCase(suffix)
+                    && !"jpeg".equalsIgnoreCase(suffix)) {
 
-                return JSONResult.errorMsg("图片格式不正确");
+                throw new BaseRuntimeException(FILE_TYPE_NOT_SUPPORT);
             }
 
-            if (split != null || split.length > 0) {
-                String newFileName = "face-" + userId + "." + split[split.length - 1];
+            String newFileName = "face-" + userId + "." + split[split.length - 1];
 
-                // 文件最终保存的路径
+            // 文件最终保存的路径
 //                String finalPath = USER_FACE_IMG_LOCATION + userFaceImgPrefix + File.pathSeparator + newFileName;
-                String finalPath =
-                        fileUpload.getUserFaceImgLocation() + userFaceImgPrefix + File.separator + newFileName;
+            String finalPath =
+                    fileUpload.getUserFaceImgLocation() + userFaceImgPrefix + File.separator + newFileName;
 
 
-                // 用于提供给web服务
-                userFaceImgPrefix += ("/" + newFileName);
-                final File outFile = new File(finalPath);
-                File parent = outFile.getParentFile();
-                if (parent != null) {
-                    // 创建文件夹
-                    parent.mkdirs();
-                }
-
-                try (BufferedInputStream bin = new BufferedInputStream(file.getInputStream());
-                     BufferedOutputStream bout = new BufferedOutputStream(new FileOutputStream(outFile))) {
-                    int b;
-                    while ((b = bin.read()) != -1) {
-                        bout.write(b);
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
+            // 用于提供给web服务
+            userFaceImgPrefix += ("/" + newFileName);
+            final File outFile = new File(finalPath);
+            File parent = outFile.getParentFile();
+            if (parent != null) {
+                // 创建文件夹
+                parent.mkdirs();
             }
+
+            try (BufferedInputStream bin = new BufferedInputStream(file.getInputStream());
+                 BufferedOutputStream bout = new BufferedOutputStream(new FileOutputStream(outFile))) {
+                int b;
+                while ((b = bin.read()) != -1) {
+                    bout.write(b);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
         }
 
         String finalUserServerUrl = fileUpload.getImgServerUrl() +
@@ -180,9 +171,6 @@ public class CenterUserController extends BaseController {
 //        setNullProperty(users);
         CookieUtils.setCookie(request, response, "user",
                 JsonUtils.objectToJson(usersVO), true);
-
-
-        return JSONResult.ok();
 
     }
 
@@ -205,21 +193,4 @@ public class CenterUserController extends BaseController {
     }
 
 
-    /**
-     * 将用户的部分信息设置为空，保护隐私
-     *
-     * @param users
-     * @return
-     */
-    private Users setNullProperty(Users users) {
-        users.setUpdatedTime(null);
-        users.setCreatedTime(null);
-        users.setBirthday(null);
-        users.setMobile(null);
-        users.setRealname(null);
-        users.setEmail(null);
-        users.setPassword(null);
-
-        return users;
-    }
 }

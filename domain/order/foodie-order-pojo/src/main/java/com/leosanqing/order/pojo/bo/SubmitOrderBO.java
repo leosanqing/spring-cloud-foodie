@@ -1,6 +1,9 @@
 package com.leosanqing.order.pojo.bo;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @Author: leosanqing
@@ -9,6 +12,9 @@ import lombok.Data;
  * @Description: 提交订单对象
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class SubmitOrderBO {
     private String userId;
     private String itemSpecIds;

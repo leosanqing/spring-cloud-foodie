@@ -1,9 +1,11 @@
 package com.leosanqing.order.controller.center;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.leosanqing.order.pojo.OrderStatus;
 import com.leosanqing.order.pojo.Orders;
+import com.leosanqing.order.pojo.vo.MyOrdersVO;
 import com.leosanqing.order.pojo.vo.OrderStatusCountsVO;
 import com.leosanqing.order.service.center.MyOrdersService;
-import com.leosanqing.pojo.JSONResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -28,7 +30,7 @@ public class MyOrdersController {
 
     @PostMapping("query")
     @ApiOperation(value = "查询我的订单", notes = "查询我的订单", httpMethod = "POST")
-    public JSONResult queryUserInfo(
+    public IPage<MyOrdersVO> queryUserInfo(
             @ApiParam(name = "userId", value = "用户id")
             @RequestParam String userId,
             @ApiParam(name = "orderStatus", value = "订单状态")
@@ -39,18 +41,16 @@ public class MyOrdersController {
             @RequestParam(defaultValue = "10") Integer pageSize
     ) {
         if (StringUtils.isBlank(userId)) {
-            return JSONResult.errorMsg("用户名id为空");
+            throw new RuntimeException("用户名id为空");
         }
 
-        return JSONResult.ok(
-                myOrdersService.queryMyOrders(userId, orderStatus, page, pageSize)
-        );
+        return myOrdersService.queryMyOrders(userId, orderStatus, page, pageSize);
     }
 
 
     @PostMapping("trend")
     @ApiOperation(value = "查询我的订单", notes = "查询我的订单", httpMethod = "POST")
-    public JSONResult getTrend(
+    public IPage<OrderStatus> getTrend(
             @ApiParam(name = "userId", value = "用户id")
             @RequestParam String userId,
             @ApiParam(name = "page", value = "当前页数")
@@ -59,80 +59,70 @@ public class MyOrdersController {
             @RequestParam(defaultValue = "10") Integer pageSize
     ) {
         if (StringUtils.isBlank(userId)) {
-            return JSONResult.errorMsg("用户名id为空");
+            throw new RuntimeException("用户名id为空");
         }
 
-        return JSONResult.ok(myOrdersService.getOrdersTrend(userId, page, pageSize));
+        return myOrdersService.getOrdersTrend(userId, page, pageSize);
     }
 
 
     // 商家发货没有后端，所以这个接口仅仅只是用于模拟
     @ApiOperation(value = "商家发货", notes = "商家发货", httpMethod = "GET")
     @GetMapping("/deliver")
-    public JSONResult deliver(
+    public void deliver(
             @ApiParam(name = "orderId", value = "订单id", required = true)
             @RequestParam String orderId) {
 
         if (StringUtils.isBlank(orderId)) {
-            return JSONResult.errorMsg("订单ID不能为空");
+            throw new RuntimeException("订单ID不能为空");
         }
         myOrdersService.updateDeliverOrderStatus(orderId);
-        return JSONResult.ok();
     }
 
 
     @ApiOperation(value = "确认收货", notes = "确认收货", httpMethod = "POST")
     @PostMapping("/confirmReceive")
-    public JSONResult confirmReceive(
+    public void confirmReceive(
             @ApiParam(name = "userId", value = "用户id", required = true)
             @RequestParam String userId,
             @ApiParam(name = "orderId", value = "订单id", required = true)
             @RequestParam String orderId) {
 
-        final JSONResult result = checkUserOrder(userId, orderId);
-        if (result.getStatus() != HttpStatus.OK.value()) {
-
-            return result;
-        }
-        final boolean isSuccess = myOrdersService.updateReceiveOrderStatus(orderId);
+        checkUserOrder(userId, orderId);
+        boolean isSuccess = myOrdersService.updateReceiveOrderStatus(orderId);
         if (!isSuccess) {
-            return JSONResult.errorMsg("确认收货失败");
+            throw new RuntimeException("确认收货失败");
         }
-        return JSONResult.ok();
     }
 
 
     @ApiOperation(value = "删除订单", notes = "删除订单", httpMethod = "POST")
     @PostMapping("/delete")
-    public JSONResult deleteOrder(
+    public void deleteOrder(
             @ApiParam(name = "userId", value = "用户id", required = true)
             @RequestParam String userId,
             @ApiParam(name = "orderId", value = "订单id", required = true)
             @RequestParam String orderId) {
 
-        final JSONResult result = checkUserOrder(userId, orderId);
-        if (result.getStatus() != HttpStatus.OK.value()) {
-            return result;
-        }
+        checkUserOrder(userId, orderId);
+
         final boolean isSuccess = myOrdersService.deleteOrder(userId, orderId);
         if (!isSuccess) {
-            return JSONResult.errorMsg("删除订单失败");
+            throw new RuntimeException("删除订单失败");
         }
-        return JSONResult.ok();
     }
 
 
     @ApiOperation(value = "获得订单状态数概况", notes = "获得订单状态数概况", httpMethod = "POST")
     @PostMapping("/statusCounts")
-    public JSONResult statusCounts(
+    public OrderStatusCountsVO statusCounts(
             @ApiParam(name = "userId", value = "用户id", required = true)
             @RequestParam String userId) {
         if (StringUtils.isBlank(userId)) {
-            return JSONResult.errorMsg("用户Id为空");
+            throw new RuntimeException("用户Id为空");
         }
 
-        OrderStatusCountsVO count = myOrdersService.getOrderStatusCounts(userId);
-        return JSONResult.ok(count);
+        return myOrdersService.getOrderStatusCounts(userId);
     }
 
     /**
@@ -142,18 +132,17 @@ public class MyOrdersController {
      * @param orderId
      * @return
      */
-    private JSONResult checkUserOrder(String userId, String orderId) {
+    private void checkUserOrder(String userId, String orderId) {
         if (StringUtils.isBlank(userId)) {
-            return JSONResult.errorMsg("用户ID不能为空");
+            throw new RuntimeException("用户ID不能为空");
         }
         if (StringUtils.isBlank(orderId)) {
-            return JSONResult.errorMsg("订单ID不能为空");
+            throw new RuntimeException("订单ID不能为空");
         }
         Orders orders = myOrdersService.queryMyOrder(userId, orderId);
         if (orders == null) {
-            return JSONResult.errorMsg("查询到订单为空");
+            throw new RuntimeException("查询到订单为空");
         }
-        return JSONResult.ok();
     }
 
 
