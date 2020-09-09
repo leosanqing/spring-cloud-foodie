@@ -7,6 +7,7 @@ import com.leosanqing.utils.RedisOperator;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -42,6 +43,7 @@ public class CartServiceImpl implements CartService {
             shopcartList = JsonUtils.jsonToList(shopcartJson, ShopCartBO.class);
             // 判断购物车中是否存在已有商品，如果有的话counts累加
             boolean isHaving = false;
+            Assert.notNull(shopcartList, "redis数据解析错误");
             for (ShopCartBO sc : shopcartList) {
                 String tmpSpecId = sc.getSpecId();
                 if (tmpSpecId.equals(ShopCartBO.getSpecId())) {

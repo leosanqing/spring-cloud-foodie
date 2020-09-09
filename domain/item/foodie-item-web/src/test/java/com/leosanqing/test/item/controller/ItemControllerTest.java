@@ -1,8 +1,12 @@
 package com.leosanqing.test.item.controller;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.leosanqing.item.controller.ItemController;
+import com.leosanqing.item.pojo.vo.ShopcartVO;
+import com.leosanqing.rpc.ResBody;
 import com.leosanqing.test.item.BaseTest;
+import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -13,6 +17,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+
+import java.util.List;
 
 /**
  * @Author: rtliu
@@ -52,7 +58,7 @@ public class ItemControllerTest extends BaseTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(
                         MockMvcResultMatchers
-                                .jsonPath("$.data.data.item.catId").value(51)
+                                .jsonPath("$.data.item.catId").value(51)
                 );
     }
 
@@ -68,7 +74,7 @@ public class ItemControllerTest extends BaseTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(
                         MockMvcResultMatchers
-                                .jsonPath("$.data.data.totalCounts").value(23)
+                                .jsonPath("$.data.totalCounts").value(23)
                 );
     }
 
@@ -85,7 +91,7 @@ public class ItemControllerTest extends BaseTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(
                         MockMvcResultMatchers
-                                .jsonPath("$.data.data.total").value(23)
+                                .jsonPath("$.data.total").value(23)
                 );
     }
 
@@ -101,5 +107,19 @@ public class ItemControllerTest extends BaseTest {
                 )
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
+
+        ResBody<List<ShopcartVO>> resBody = objectMapper.readValue(
+                result.getResponse().getContentAsString(),
+                new TypeReference<ResBody<List<ShopcartVO>>>() {
+                });
+
+        List<ShopcartVO> shopcartVOS = resBody.getData();
+        Assert.assertEquals(3, shopcartVOS.size());
+
+        ShopcartVO shopcartVO = shopcartVOS.get(0);
+
+        Assert.assertEquals("巧克力", shopcartVO.getSpecName());
+        Assert.assertEquals("12000", shopcartVO.getPriceDiscount());
+
     }
 }

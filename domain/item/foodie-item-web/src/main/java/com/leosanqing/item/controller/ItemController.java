@@ -1,9 +1,11 @@
 package com.leosanqing.item.controller;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.leosanqing.item.pojo.vo.CommentLevelCountsVO;
+import com.leosanqing.item.pojo.vo.ItemCommentVO;
 import com.leosanqing.item.pojo.vo.ItemInfoVO;
 import com.leosanqing.item.pojo.vo.ShopcartVO;
 import com.leosanqing.item.service.ItemService;
-import com.leosanqing.pojo.JSONResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -30,41 +32,41 @@ public class ItemController {
 
     @GetMapping("/info/{itemId}")
     @ApiOperation(value = "商品详情", notes = "商品详情", httpMethod = "GET")
-    public JSONResult subCats(
+    public ItemInfoVO subCats(
             @ApiParam(name = "itemId", value = "商品Id", required = true)
             @PathVariable String itemId
     ) {
 
         if (StringUtils.isBlank(itemId)) {
-            return JSONResult.errorMsg("商品id为空");
+            throw new RuntimeException("商品id为空");
         }
 
-        ItemInfoVO itemInfoVO = ItemInfoVO
+        return ItemInfoVO
                 .builder()
                 .item(itemService.queryItemsById(itemId))
                 .itemImgList(itemService.queryItemImgList(itemId))
                 .itemSpecList(itemService.queryItemSpecList(itemId))
                 .itemParams(itemService.queryItemParam(itemId))
                 .build();
-        return JSONResult.ok(itemInfoVO);
+
     }
 
 
     @GetMapping("commentLevel")
     @ApiOperation(value = "商品评价等级", notes = "商品评价等级", httpMethod = "GET")
-    public JSONResult getCommentsCount(
+    public CommentLevelCountsVO getCommentsCount(
             @ApiParam(name = "itemId", value = "商品Id", required = true)
             @RequestParam String itemId
     ) {
         if (StringUtils.isBlank(itemId)) {
-            return JSONResult.errorMsg("商品id为空");
+            throw new RuntimeException("商品id为空");
         }
-        return JSONResult.ok(itemService.queryCommentCounts(itemId));
+        return itemService.queryCommentCounts(itemId);
     }
 
     @GetMapping("comments")
     @ApiOperation(value = "查询商品评价", notes = "查询商品评价", httpMethod = "GET")
-    public JSONResult getCommentsCount(
+    public IPage<ItemCommentVO> getCommentsCount(
             @ApiParam(name = "itemId", value = "商品Id", required = true)
             @RequestParam String itemId,
             @ApiParam(name = "level", value = "商品等级", required = false)
@@ -75,9 +77,10 @@ public class ItemController {
             @RequestParam(defaultValue = "10", required = false) Integer pageSize
     ) {
         if (StringUtils.isBlank(itemId)) {
-            return JSONResult.errorMsg("商品id为空");
+            throw new RuntimeException("商品id为空");
         }
-        return JSONResult.ok(itemService.queryPagedComments(itemId, level, page, pageSize));
+
+        return itemService.queryPagedComments(itemId, level, page, pageSize);
     }
 
 
@@ -119,14 +122,14 @@ public class ItemController {
 
     @GetMapping("refresh")
     @ApiOperation(value = "刷新购物车", notes = "刷新购物车", httpMethod = "GET")
-    public JSONResult queryItemsBySpecIds(
+    public List<ShopcartVO> queryItemsBySpecIds(
             @ApiParam(name = "itemSpecIds", value = "商品规格Id列表", required = true)
             @RequestParam String itemSpecIds
     ) {
         if (StringUtils.isBlank(itemSpecIds)) {
-            return JSONResult.errorMsg("商品规格Id列表为空");
+            throw new RuntimeException("商品规格Id列表为空");
         }
 
-        return JSONResult.ok(itemService.queryItemsBySpecIds(itemSpecIds));
+        return itemService.queryItemsBySpecIds(itemSpecIds);
     }
 }

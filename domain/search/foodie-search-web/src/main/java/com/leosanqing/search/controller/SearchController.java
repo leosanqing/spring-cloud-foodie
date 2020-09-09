@@ -1,7 +1,8 @@
 package com.leosanqing.search.controller;
 
 
-import com.leosanqing.pojo.JSONResult;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.leosanqing.search.pojo.Items;
 import com.leosanqing.search.service.ItemESService;
 import io.swagger.annotations.Api;
 import org.apache.commons.lang3.StringUtils;
@@ -27,14 +28,14 @@ public class SearchController {
     private ItemESService itemESService;
 
     @GetMapping("/es/search")
-    public JSONResult searchItems(
+    public IPage<Items> searchItems(
             String keywords,
             String sort,
             Integer page,
             Integer pageSize) {
 
         if (StringUtils.isBlank(keywords)) {
-            return JSONResult.errorMsg("关键字为空");
+            throw new RuntimeException("关键字为空");
         }
         if (page == null) {
             page = 1;
@@ -43,7 +44,7 @@ public class SearchController {
             pageSize = 20;
         }
         page--;
-        return JSONResult.ok(itemESService.searchItems(keywords, sort, page, pageSize));
+        return itemESService.searchItems(keywords, sort, page, pageSize);
     }
 
     @GetMapping("leosanqing")

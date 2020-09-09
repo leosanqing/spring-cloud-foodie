@@ -7,7 +7,6 @@ import com.leosanqing.index.pojo.vo.CategoryVO;
 import com.leosanqing.index.pojo.vo.NewItemsVO;
 import com.leosanqing.index.service.CarouselService;
 import com.leosanqing.index.service.CategoryService;
-import com.leosanqing.pojo.JSONResult;
 import com.leosanqing.utils.JsonUtils;
 import com.leosanqing.utils.RedisOperator;
 import io.swagger.annotations.Api;
@@ -45,7 +44,7 @@ public class IndexController {
 
     @GetMapping("carousel")
     @ApiOperation(value = "获取首页了轮播图列表", notes = "获取首页轮播图列表", httpMethod = "GET")
-    public JSONResult carousel() {
+    public List<Carousel> carousel() {
 
         /*
          * 轮播图失效时间：
@@ -55,71 +54,67 @@ public class IndexController {
          */
         List<Carousel> carousels;
         final String carouselStr = redisOperator.get("carousel");
-        if (StringUtils.isBlank(carouselStr)) {
-            carousels = carouselService.queryAll(YesOrNo.YES.type);
-            redisOperator.set("carousel", JsonUtils.objectToJson(carousels));
-        } else {
-            carousels = JsonUtils.jsonToList(carouselStr, Carousel.class);
+        if (!StringUtils.isBlank(carouselStr)) {
+            return JsonUtils.jsonToList(carouselStr, Carousel.class);
         }
 
-        return JSONResult.ok(carousels);
+        carousels = carouselService.queryAll(YesOrNo.YES.type);
+        redisOperator.set("carousel", JsonUtils.objectToJson(carousels));
 
-
+        return carousels;
     }
 
     @GetMapping("cats")
     @ApiOperation(value = "获取一级目录所有节点", notes = "获取一级目录所有节点", httpMethod = "GET")
-    public JSONResult cats() {
+    public List<Category> cats() {
 
         List<Category> categoryList;
 
         final String catsStr = redisOperator.get("cats");
-        if (StringUtils.isBlank(catsStr)) {
-            categoryList = categoryService.queryAllRootLevelCat();
-            redisOperator.set("cats", JsonUtils.objectToJson(categoryList));
-        } else {
-            categoryList = JsonUtils.jsonToList(catsStr, Category.class);
+        if (!StringUtils.isBlank(catsStr)) {
+            return JsonUtils.jsonToList(catsStr, Category.class);
         }
-        return JSONResult.ok(categoryList);
+        categoryList = categoryService.queryAllRootLevelCat();
+        redisOperator.set("cats", JsonUtils.objectToJson(categoryList));
+        return categoryList;
     }
 
     @GetMapping("subCat/{rootCatId}")
     @ApiOperation(value = "获取商品子分类", notes = "获取商品子分类", httpMethod = "GET")
-    public JSONResult subCats(
+    public List<CategoryVO> subCats(
             @ApiParam(name = "rootCatId", value = "一级分类Id", required = true)
             @PathVariable Integer rootCatId) {
         if (rootCatId == null) {
-            return JSONResult.errorMsg("商品分类不存在");
+            throw new RuntimeException("商品分类不存在");
         }
 
         List<CategoryVO> categoryVOList;
         final String subCatStr = redisOperator.get("subCat:" + rootCatId);
-        if (StringUtils.isBlank(subCatStr)) {
-            categoryVOList = categoryService.getSubCatList(rootCatId);
-            if (categoryVOList == null || categoryVOList.size() == 0) {
-                redisOperator.set("subCat:" + rootCatId, JsonUtils.objectToJson(categoryVOList));
-            } else {
-                redisOperator.set("subCat:" + rootCatId, JsonUtils.objectToJson(categoryVOList), 5 * 60 * 1000);
-            }
-        } else {
-            categoryVOList = JsonUtils.jsonToList(subCatStr, CategoryVO.class);
+        if (!StringUtils.isBlank(subCatStr)) {
+            return JsonUtils.jsonToList(subCatStr, CategoryVO.class);
         }
-        return JSONResult.ok(categoryVOList);
+
+        categoryVOList = categoryService.getSubCatList(rootCatId);
+        if (categoryVOList == null || categoryVOList.size() == 0) {
+            redisOperator.set("subCat:" + rootCatId, JsonUtils.objectToJson(categoryVOList));
+        } else {
+            redisOperator.set("subCat:" + rootCatId, JsonUtils.objectToJson(categoryVOList), 5 * 60 * 1000);
+        }
+        return categoryVOList;
     }
 
 
     @GetMapping("sixNewItems/{rootCatId}")
     @ApiOperation(value = "查询每个分类下的六个最新商品", notes = "查询每个分类下的六个最新商品", httpMethod = "GET")
-    public JSONResult getSixNewItems(
+    public List<NewItemsVO> getSixNewItems(
             @ApiParam(name = "rootCatId", value = "一级分类Id", required = true)
             @PathVariable Integer rootCatId
     ) {
-
         if (rootCatId == null) {
-            return JSONResult.errorMsg("商品分类不存在");
+            throw new RuntimeException("商品分类不存在");
         }
 
-        return JSONResult.ok(categoryService.getSixNewItemsLazy(rootCatId));
+        return categoryService.getSixNewItemsLazy(rootCatId);
     }
 
 

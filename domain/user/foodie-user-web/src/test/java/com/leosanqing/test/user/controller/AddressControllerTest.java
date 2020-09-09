@@ -1,8 +1,8 @@
-package com.leosanqing.test.index.controller;
+package com.leosanqing.test.user.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.leosanqing.index.controller.IndexController;
-import com.leosanqing.test.index.BaseTest;
+import com.leosanqing.test.user.BaseTest;
+import com.leosanqing.user.controller.AddressController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -10,49 +10,47 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.aop.framework.AopProxyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 /**
  * @Author: rtliu
- * @Date: 2020/8/26 上午9:54
- * @Package: com.leosanqing.test.item.controller
- * @Description: ItemController 测试
- * @Version: 1.0
+ * @Date: 2020/8/28 上午11:22
+ * @Package: com.leosanqing.test.user.controller.center
+ * @Description: 用户中心 controller
+ * @Version: 2.0
  */
-
-public class ItemControllerTest extends BaseTest {
+public class AddressControllerTest extends BaseTest {
     @Autowired
     ObjectMapper mapper;
 
 
     @InjectMocks
     @Autowired
-    IndexController indexController;
+    AddressController addressController;
 
     @Override
     @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
 
-        indexController = (IndexController) AopProxyUtils.getSingletonTarget(indexController);
+        addressController = (AddressController) AopProxyUtils.getSingletonTarget(addressController);
         MockitoAnnotations.initMocks(this);
     }
 
-
     @Test
-    void query_item_info() throws Exception {
+    void queryUserInfo() throws Exception {
         mockMvc
                 .perform(
                         MockMvcRequestBuilders
-                                .get("/items/info/{itemId}", "bingan-1001")
+                                .get("/center/userInfo/")
+                                .param("userId", USER_ID)
                                 .accept(MediaType.APPLICATION_JSON_UTF8)
                 )
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(
                         MockMvcResultMatchers
-                                .jsonPath("$.data.data.item.catId").value(51)
+                                .jsonPath("$.data.username").value(USER_NAME)
                 );
     }
 

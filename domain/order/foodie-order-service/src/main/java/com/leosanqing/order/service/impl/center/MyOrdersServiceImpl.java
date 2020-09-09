@@ -13,7 +13,6 @@ import com.leosanqing.order.pojo.Orders;
 import com.leosanqing.order.pojo.vo.MyOrdersVO;
 import com.leosanqing.order.pojo.vo.OrderStatusCountsVO;
 import com.leosanqing.order.service.center.MyOrdersService;
-import com.leosanqing.pojo.JSONResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,8 +53,7 @@ public class MyOrdersServiceImpl extends ServiceImpl<OrdersMapper, Orders> imple
 
         orderStatusMapper.update(
                 updateOrder,
-                Wrappers
-                        .lambdaUpdate(OrderStatus.class)
+                Wrappers.lambdaUpdate(OrderStatus.class)
                         .eq(OrderStatus::getOrderId, orderId)
                         .eq(OrderStatus::getOrderStatus, OrderStatus.OrderStatusEnum.WAIT_DELIVER.type)
         );
@@ -144,12 +142,12 @@ public class MyOrdersServiceImpl extends ServiceImpl<OrdersMapper, Orders> imple
     }
 
     @Override
-    public JSONResult checkUserOrder(@RequestParam("userId") String userId,
-                                     @RequestParam("orderId") String orderId) {
+    public Orders checkUserOrder(@RequestParam("userId") String userId,
+                                 @RequestParam("orderId") String orderId) {
         Orders order = queryMyOrder(userId, orderId);
         if (order == null) {
-            return JSONResult.errorMap("订单不存在！！！");
+            throw new RuntimeException("订单不存在");
         }
-        return JSONResult.ok(order);
+        return order;
     }
 }

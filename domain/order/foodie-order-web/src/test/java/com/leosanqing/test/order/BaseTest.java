@@ -1,9 +1,9 @@
-package com.leosanqing.test.index;
+package com.leosanqing.test.order;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import com.leosanqing.index.IndexApplication;
+import com.leosanqing.order.OrderApplication;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -19,7 +19,7 @@ import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 
-@SpringBootTest(classes = IndexApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(classes = OrderApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 public class BaseTest {
 
@@ -33,16 +33,21 @@ public class BaseTest {
     public MockMvc mockMvc;
 
 
-    public static final String CAROUSEL = "carousel";
-    public static final String CATS = "cats";
-    public static final String SUB_CAT = "subCat";
-    public static final String SUB_CAT_ID = "1";
+    public final static String USER_ID = "19120779W7TK6800";
+    public final static String ADDRESS_ID = "1912146TY0A63ANC";
+    public final static String USER_NAME = "leosanqing";
+    public final static String PASSWORD = "123456";
+
+    public static final String SHOP_CART = "shopcart";
+    public static final String REDIS_USER_TOKEN = "redis_user_token";
+    public static final String ORDER_ID = "191215AM5260S894";
+
 
     @BeforeAll
     public static void setup() throws Exception {
         wireMockServer = new WireMockServer(
                 options()
-                        .port(10010)
+                        .port(10003)
         );
         wireMockServer.start();
         WireMock.configureFor(wireMockServer.port());

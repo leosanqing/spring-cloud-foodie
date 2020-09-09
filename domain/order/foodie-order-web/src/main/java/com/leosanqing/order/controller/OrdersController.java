@@ -6,7 +6,6 @@ import com.leosanqing.order.pojo.bo.PlaceOrderBO;
 import com.leosanqing.order.pojo.bo.SubmitOrderBO;
 import com.leosanqing.order.pojo.vo.OrderVO;
 import com.leosanqing.order.service.OrderService;
-import com.leosanqing.pojo.JSONResult;
 import com.leosanqing.pojo.ShopCartBO;
 import com.leosanqing.utils.CookieUtils;
 import com.leosanqing.utils.JsonUtils;
@@ -17,7 +16,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -28,7 +26,6 @@ import java.util.List;
 @RestController
 @Slf4j
 public class OrdersController extends BaseController {
-
 
     @Autowired
     private OrderService orderService;
@@ -41,17 +38,16 @@ public class OrdersController extends BaseController {
 
     @ApiOperation(value = "用户下单", notes = "用户下单", httpMethod = "POST")
     @PostMapping("/create")
-    public JSONResult create(
+    public String create(
             @RequestBody SubmitOrderBO submitOrderBO,
             HttpServletRequest request,
             HttpServletResponse response) {
 
         final String shopCartStr = redisOperator.get(SHOP_CART + ":" + submitOrderBO.getUserId());
         if (StringUtils.isBlank(shopCartStr)) {
-            return JSONResult.errorMsg("购物车数据不正确");
+            throw new RuntimeException("购物车数据不正确");
         }
         List<ShopCartBO> shopCartBOList = JsonUtils.jsonToList(shopCartStr, ShopCartBO.class);
-
 
         // 1.创建订单
         OrderVO orderVO = orderService.createOrder(new PlaceOrderBO(submitOrderBO, shopCartBOList));
@@ -67,9 +63,7 @@ public class OrdersController extends BaseController {
 
         // TODO 整合Redis之后
         // 3.像支付中心发送当前订单，用于保存支付中心的订单数据
-        System.out.println(submitOrderBO.toString());
-        return JSONResult.ok(orderId);
-
+        return orderId;
     }
 
 //    @PostMapping("notifyMerchantOrderPaid")
@@ -79,9 +73,7 @@ public class OrdersController extends BaseController {
 //    }
 
     @PostMapping("getPaidOrderInfo")
-    public JSONResult getPaidOrderInfo(@RequestParam String orderId) {
-
-        OrderStatus orderStatus = orderService.queryOrderStatusInfo(orderId);
-        return JSONResult.ok(orderStatus);
+    public OrderStatus getPaidOrderInfo(@RequestParam String orderId) {
+        return orderService.queryOrderStatusInfo(orderId);
     }
 }

@@ -4,7 +4,6 @@ import com.leosanqing.controller.BaseController;
 
 import com.leosanqing.fastdfs.config.resource.FileResource;
 import com.leosanqing.fastdfs.service.FdfsService;
-import com.leosanqing.pojo.JSONResult;
 import com.leosanqing.user.pojo.Users;
 import com.leosanqing.user.pojo.vo.UsersVO;
 import com.leosanqing.user.service.center.CenterUserService;
@@ -53,7 +52,7 @@ public class CenterUserController extends BaseController {
 
     @PostMapping("uploadFace")
     @ApiOperation(value = "查询用户信息", notes = "查询用户信息", httpMethod = "POST")
-    public JSONResult queryUserInfo(
+    public void queryUserInfo(
             @ApiParam(name = "userId", value = "用户id", required = true)
             @RequestParam String userId,
             @ApiParam(name = "file", value = "用户头像", required = true)
@@ -63,13 +62,12 @@ public class CenterUserController extends BaseController {
 
     ) throws IOException {
         if (StringUtils.isBlank(userId)) {
-            return JSONResult.errorMsg("用户名id为空");
+            throw new RuntimeException("用户名id为空");
         }
 
         if (file == null) {
-            return JSONResult.errorMsg("文件不能为空");
+            throw new RuntimeException("文件不能为空");
         }
-
 
         String path = "";
         String filename = file.getOriginalFilename();
@@ -80,31 +78,22 @@ public class CenterUserController extends BaseController {
                     && !"jpg".equalsIgnoreCase(suffix)
                     && !"jpeg".equalsIgnoreCase(suffix)) {
 
-                return JSONResult.errorMsg("图片格式不正确");
+                throw new RuntimeException("图片格式不正确");
             }
-
             path = fdfsService.upload(file, suffix);
-            System.out.println(path);
         }
         if (StringUtils.isBlank(path)) {
-            return JSONResult.errorMsg("上传用户头像失败");
-        } else {
-
-
-            String finalUserServerUrl = fileResource.getHost() + path;
-
-            Users users = centerUserService.updateUserFace(userId, finalUserServerUrl);
-
-
-            // 后续增加令牌 整合进redis
-            UsersVO usersVO = convertUsersVO(users);
-            CookieUtils.setCookie(request, response, "user",
-                    JsonUtils.objectToJson(usersVO), true);
+            throw new RuntimeException("上传用户头像失败");
         }
 
+        String finalUserServerUrl = fileResource.getHost() + path;
 
-        return JSONResult.ok();
+        Users users = centerUserService.updateUserFace(userId, finalUserServerUrl);
 
+        // 后续增加令牌 整合进redis
+        UsersVO usersVO = convertUsersVO(users);
+        CookieUtils.setCookie(request, response, "user",
+                JsonUtils.objectToJson(usersVO), true);
     }
 
     private UsersVO convertUsersVO(Users users) {
